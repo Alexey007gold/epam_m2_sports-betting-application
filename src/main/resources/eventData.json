@@ -1,0 +1,134 @@
+[ {
+  "event" : {
+    "@type" : "Football",
+    "title" : "Southampton v Bournemoth",
+    "startDate" : "2016-10-27T19:00",
+    "endDate" : "2016-10-27T21:00",
+    "result" : null
+  },
+  "description" : "",
+  "outcomes" : [ {
+    "value" : "Southampton",
+    "outcomeOdds" : [ {
+      "value" : 4.0,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : "2016-09-30T18:59"
+    }, {
+      "value" : 5.0,
+      "validFrom" : "2016-09-30T19:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : "Bournemoth",
+    "outcomeOdds" : [ {
+      "value" : 1.7,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : "2016-09-30T18:59"
+    }, {
+      "value" : 1.5,
+      "validFrom" : "2016-09-30T19:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : "Draw",
+    "outcomeOdds" : [ {
+      "value" : 3.0,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : "2016-09-30T18:59"
+    }, {
+      "value" : 3.5,
+      "validFrom" : "2016-09-30T19:00",
+      "validTo" : null
+    } ]
+  } ],
+  "betType" : "WINNER"
+}, {
+  "event" : {
+    "@type" : "Football",
+    "title" : "Southampton v Bournemoth",
+    "startDate" : "2016-10-27T19:00",
+    "endDate" : "2016-10-27T21:00",
+    "result" : null
+  },
+  "description" : "",
+  "outcomes" : [ {
+    "value" : "0",
+    "outcomeOdds" : [ {
+      "value" : 1.75,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : "1",
+    "outcomeOdds" : [ {
+      "value" : 1.25,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : ">=2",
+    "outcomeOdds" : [ {
+      "value" : 1.05,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : null
+    } ]
+  } ],
+  "betType" : "GOAL"
+}, {
+  "event" : {
+    "@type" : "Football",
+    "title" : "Southampton v Bournemoth",
+    "startDate" : "2016-10-27T19:00",
+    "endDate" : "2016-10-27T21:00",
+    "result" : null
+  },
+  "description" : "scores of Victor Wanyama",
+  "outcomes" : [ {
+    "value" : "0",
+    "outcomeOdds" : [ {
+      "value" : 1.05,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : "1",
+    "outcomeOdds" : [ {
+      "value" : 1.8,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : "2",
+    "outcomeOdds" : [ {
+      "value" : 3.15,
+      "validFrom" : "2016-09-27T19:00",
+      "validTo" : null
+    } ]
+  } ],
+  "betType" : "SCORE"
+}, {
+  "event" : {
+    "@type" : "Tennis",
+    "title" : "Rafael Nadal vs. Alexander Zverev, Indian Wells 4th Round",
+    "startDate" : "2016-08-10T19:00",
+    "endDate" : "2016-08-10T22:00",
+    "result" : null
+  },
+  "description" : "",
+  "outcomes" : [ {
+    "value" : "Rafael Nadal",
+    "outcomeOdds" : [ {
+      "value" : 1.01,
+      "validFrom" : "2016-01-01T00:00",
+      "validTo" : null
+    } ]
+  }, {
+    "value" : "Alexander Zverev",
+    "outcomeOdds" : [ {
+      "value" : 1.7,
+      "validFrom" : "2016-01-01T00:00",
+      "validTo" : null
+    } ]
+  } ],
+  "betType" : "WINNER"
+} ]
