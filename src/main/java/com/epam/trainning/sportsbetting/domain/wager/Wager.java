@@ -1,11 +1,13 @@
 package com.epam.trainning.sportsbetting.domain.wager;
 
 import com.epam.trainning.sportsbetting.domain.outcome.OutcomeOdd;
+import com.epam.trainning.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.trainning.sportsbetting.domain.user.Currency;
 import com.epam.trainning.sportsbetting.domain.user.Player;
 
 public class Wager {
 
+    private SportEvent event;
     private Player player;
     private OutcomeOdd outcomeOdd;
     private double amount;
@@ -14,8 +16,10 @@ public class Wager {
     private boolean processed;
     private boolean win;
 
-    public Wager(Player player, OutcomeOdd outcomeOdd, double amount,
-                 Currency currency, long timestamp, boolean processed, boolean win) {
+    public Wager(SportEvent event, Player player, OutcomeOdd outcomeOdd,
+                 double amount, Currency currency, long timestamp,
+                 boolean processed, boolean win) {
+        this.event = event;
         this.player = player;
         this.outcomeOdd = outcomeOdd;
         this.amount = amount;
@@ -23,6 +27,14 @@ public class Wager {
         this.timestamp = timestamp;
         this.processed = processed;
         this.win = win;
+    }
+
+    public SportEvent getEvent() {
+        return event;
+    }
+
+    public void setEvent(SportEvent event) {
+        this.event = event;
     }
 
     public Player getPlayer() {
