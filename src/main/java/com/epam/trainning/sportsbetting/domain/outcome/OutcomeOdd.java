@@ -2,6 +2,7 @@ package com.epam.trainning.sportsbetting.domain.outcome;
 
 import com.epam.trainning.sportsbetting.json.serialize.LocalDateTimeDeserializer;
 import com.epam.trainning.sportsbetting.json.serialize.LocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -9,6 +10,8 @@ import java.time.LocalDateTime;
 
 public class OutcomeOdd {
 
+    @JsonIgnore
+    private Outcome outcome;
     private double value;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -20,7 +23,8 @@ public class OutcomeOdd {
     public OutcomeOdd() {
     }
 
-    public OutcomeOdd(double value, LocalDateTime validFrom, LocalDateTime validTo) {
+    public OutcomeOdd(Outcome outcome, double value, LocalDateTime validFrom, LocalDateTime validTo) {
+        this.outcome = outcome;
         this.value = value;
         this.validFrom = validFrom;
         this.validTo = validTo;
@@ -38,6 +42,10 @@ public class OutcomeOdd {
         this.validTo = validTo;
     }
 
+    public void setOutcome(Outcome outcome) {
+        this.outcome = outcome;
+    }
+
     public double getValue() {
         return value;
     }
@@ -48,5 +56,9 @@ public class OutcomeOdd {
 
     public LocalDateTime getValidTo() {
         return validTo;
+    }
+
+    public Outcome getOutcome() {
+        return outcome;
     }
 }
