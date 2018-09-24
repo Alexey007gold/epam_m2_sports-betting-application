@@ -56,6 +56,13 @@ public class Bet {
         return betType;
     }
 
+    @Override
+    public String toString() {
+        if (betType.equals(BetType.SCORE))
+            return betType + " " + description;
+        else return betType.toString();
+    }
+
     public enum BetType {
         GOAL,
         WINNER,

@@ -7,8 +7,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class OutcomeOdd {
+
+    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
     @JsonIgnore
     private Outcome outcome;
@@ -60,5 +63,15 @@ public class OutcomeOdd {
 
     public Outcome getOutcome() {
         return outcome;
+    }
+
+    @Override
+    public String toString() {
+        return "[" +
+                "value=" + outcome.getValue() +
+                ", outcomeOdds=" + getValue() +
+                " and valid from " + getValidFrom().format(dtf) +
+                " to " + getValidTo().format(dtf) +
+                ']';
     }
 }

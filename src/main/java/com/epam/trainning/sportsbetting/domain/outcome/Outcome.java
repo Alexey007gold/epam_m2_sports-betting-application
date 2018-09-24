@@ -1,11 +1,18 @@
 package com.epam.trainning.sportsbetting.domain.outcome;
 
+import com.epam.trainning.sportsbetting.domain.bet.Bet;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Outcome {
 
+    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+
     private String value;
     private List<OutcomeOdd> outcomeOdds;
+    private Bet bet;
 
     public Outcome() {
     }
@@ -33,5 +40,35 @@ public class Outcome {
 
     public void setOutcomeOdds(List<OutcomeOdd> outcomeOdds) {
         this.outcomeOdds = outcomeOdds;
+    }
+
+    public OutcomeOdd getActiveOdd() {
+        if (outcomeOdds == null) return null;
+
+        LocalDateTime now = LocalDateTime.now();
+        for (OutcomeOdd outcomeOdd : outcomeOdds) {
+            LocalDateTime validFrom = outcomeOdd.getValidFrom();
+            LocalDateTime validTo = outcomeOdd.getValidTo();
+            if ((validFrom.isBefore(now) || validFrom.isEqual(now)) &&
+                    (validTo.isAfter(now) || validFrom.isEqual(now))) {
+                return outcomeOdd;
+            }
+        }
+        return null;
+    }
+
+    public Bet getBet() {
+        return bet;
+    }
+
+    public void setBet(Bet bet) {
+        this.bet = bet;
+    }
+
+    @Override
+    public String toString() {
+        return "[" +
+                "value=" + getValue() +
+                ']';
     }
 }

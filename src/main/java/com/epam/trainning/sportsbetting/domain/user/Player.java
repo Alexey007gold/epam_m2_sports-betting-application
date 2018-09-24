@@ -35,14 +35,8 @@ public class Player extends User {
         return balance;
     }
 
-    public void decreaseBalance(double amount) {
-        if (balance < amount) throw new IllegalArgumentException("Not enough money");
-
-        balance -= amount;
-    }
-
-    public void increaseBalance(double amount) {
-        balance += amount;
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public Currency getCurrency() {
