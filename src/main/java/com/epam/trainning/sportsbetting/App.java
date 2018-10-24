@@ -8,12 +8,14 @@ import com.epam.trainning.sportsbetting.domain.user.Currency;
 import com.epam.trainning.sportsbetting.domain.user.Player;
 import com.epam.trainning.sportsbetting.domain.wager.Wager;
 import com.epam.trainning.sportsbetting.service.*;
+import com.epam.trainning.sportsbetting.service.impl.*;
 import com.epam.trainning.sportsbetting.ui.ConsoleView;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,25 +40,28 @@ public class App {
 
     public App() throws IOException, URISyntaxException {
         this.consoleView = new ConsoleView();
-        this.dataService = new DataService();
-        this.eventService = new EventService(dataService);
-        this.playerService = new PlayerService();
-        this.wagerService = new WagerService();
-        this.betService = new BetService(dataService, playerService);
+        this.dataService = new DataServiceImpl();
+        this.eventService = new EventServiceImpl();
+        this.playerService = new PlayerServiceImpl();
+        this.wagerService = new WagerServiceImpl();
+        this.betService = new BetServiceImpl(playerService);
     }
 
     private void run() {
         Player player = getPlayer();
         sayHello(player);
 
-        Map<Outcome, Wager> userBets = gatherBets(player);
+        List<Wager> userBets = gatherBets(player);
 
-        eventService.playEvents();
+        //play only events that are not started yet
+        List<SportEvent> events = dataService.getEvents().stream()
+                .filter(e -> e.getStartDate().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList());
+        eventService.playEvents(events);
 
-        betService.processBets(userBets);
-
-        displayResults();
-        displayUserPrize(userBets);
+        Map<Player, Double> playerToPrizeMap = betService.processBets(userBets, events);
+        displayResults(events);
+        displayUserPrize(userBets, playerToPrizeMap.get(player));
     }
 
     private Player getPlayer() {
@@ -77,9 +82,9 @@ public class App {
         return playerService.registerPlayer(name, accountNumber, balance, currency, birthDate);
     }
 
-    private void displayResults() {
+    private void displayResults(List<SportEvent> eventsToDisplay) {
         consoleView.write("Events results:\n");
-        for (SportEvent event : dataService.getEvents()) {
+        for (SportEvent event : eventsToDisplay) {
             for (Outcome outcome : event.getResult().getOutcomes()) {
                 consoleView.write(String.format(" - Event: %s The winner is Outcome %d, %s: %s%n",
                         event.getTitle(), dataService.getPossibleOutcomes().indexOf(outcome) + 1,
@@ -89,20 +94,18 @@ public class App {
         consoleView.write("\n");
     }
 
-    private Map<Outcome, Wager> gatherBets(Player player) {
-        Map<Outcome, Wager> userBets = new HashMap<>();
-        Map<Outcome, SportEvent> outcomeToEventMap = new HashMap<>();
-        dataService.getEvents()
-                .forEach(event -> event.getBets()
-                        .forEach(bet -> bet.getOutcomes()
-                                .forEach(o -> outcomeToEventMap.put(o, bet.getEvent())))
-                );
+    private List<Wager> gatherBets(Player player) {
+        List<Wager> userBets = new ArrayList<>();
 
         while (true) {
-            printBetMenu();
+            if (player.getBalance() <= 0) return userBets;
 
-            Outcome chosenOutcome = getSelection(userBets);
-            //change wager?
+            List<Outcome> outcomesAvailableForBetting = dataService.getPossibleOutcomes().stream()
+                    .filter(o -> o.getActiveOdd() != null)
+                    .collect(Collectors.toList());
+            printBetMenu(outcomesAvailableForBetting);
+
+            Outcome chosenOutcome = chooseOutcome(outcomesAvailableForBetting);
             if (chosenOutcome == null) return userBets;
 
             consoleView.write("How much do you want to bet on it? (q for quit)\n");
@@ -110,43 +113,40 @@ public class App {
             if (wage == -1) return userBets;
             wage = uncheck(df::parse, df.format(wage)).doubleValue();
 
-            Wager wager = new Wager(outcomeToEventMap.get(chosenOutcome),
-                    player, chosenOutcome.getOutcomeOdds().get(0), wage,
+            Wager wager = new Wager(chosenOutcome.getBet().getEvent(),
+                    player, chosenOutcome.getActiveOdd(), wage,
                     player.getCurrency(), System.currentTimeMillis(), false, false);
-            userBets.put(chosenOutcome, wager);
+            userBets.add(wager);
 
             playerService.decreasePlayerBalance(player, wage);
 
             consoleView.write(String.format("Your new balance is %s %s%n", df.format(player.getBalance()), player.getCurrency()));
-            if (player.getBalance() <= 0) return userBets;
         }
     }
 
-    private void printBetMenu() {
+    private void printBetMenu(List<Outcome> outcomesAvailableForBetting) {
         consoleView.write("Please choose an outcome to bet on! (choose a number or press q for quit)\n");
-        int outcomeNumber = 1;
-        List<Bet> availableBets = dataService.getAvailableBets();
-        for (Bet bet : availableBets) {
-            for (Outcome outcome : bet.getOutcomes()) {
-                OutcomeOdd odd = outcome.getActiveOdd();
-                if (odd == null) continue;
-                String betDescription = null;
-                if (bet.getBetType() == Bet.BetType.GOAL) {
-                    betDescription = "the number of scored goals will be " + outcome.getValue();
-                } else if (bet.getBetType() == Bet.BetType.SCORE) {
-                    betDescription = bet.getDescription() + " " + outcome.getValue();
-                } else if (bet.getBetType() == Bet.BetType.WINNER) {
-                    betDescription = "the winner will be " + outcome.getValue();
-                }
-
-                consoleView.write(String.format("%d: Bet on the %s sport event, %s. The odd on this is %s, valid from %s to %s%n",
-                        outcomeNumber++, bet.getEvent().getTitle(), betDescription, odd.getValue(),
-                        odd.getValidFrom().format(dtf), odd.getValidTo().format(dtf)));
-            }
+        if (outcomesAvailableForBetting.isEmpty()) {
+            consoleView.write("No available bets found! Try again later.");
         }
-        if (outcomeNumber == 1) {
-            consoleView.write("No available bets found! Try again later. Bye!");
-            System.exit(0);
+
+        for (int i = 0; i < outcomesAvailableForBetting.size(); i++) {
+            Outcome outcome = outcomesAvailableForBetting.get(i);
+            OutcomeOdd odd = outcome.getActiveOdd();
+            Bet bet = outcome.getBet();
+
+            String betDescription = null;
+            if (bet.getBetType() == Bet.BetType.GOAL) {
+                betDescription = "the number of scored goals will be " + outcome.getValue();
+            } else if (bet.getBetType() == Bet.BetType.SCORE) {
+                betDescription = bet.getDescription() + " " + outcome.getValue();
+            } else if (bet.getBetType() == Bet.BetType.WINNER) {
+                betDescription = "the winner will be " + outcome.getValue();
+            }
+
+            consoleView.write(String.format("%d: Bet on the %s sport event, %s. The odd on this is %s, valid from %s to %s%n",
+                    i + 1, bet.getEvent().getTitle(), betDescription, odd.getValue(),
+                    odd.getValidFrom().format(dtf), odd.getValidTo().format(dtf)));
         }
     }
 
@@ -171,7 +171,17 @@ public class App {
         }
     }
 
-    private Outcome getSelection(Map<Outcome, Wager> userBets) {
+    /**
+     * Lets the user to choose an outcome from the list of possible outcomes
+     * User cannot choose
+     * @param outcomesAvailableForBetting
+     * @return
+     */
+    private Outcome chooseOutcome(List<Outcome> outcomesAvailableForBetting) {
+        if (outcomesAvailableForBetting.isEmpty()) {
+            return null;
+        }
+
         String input;
         int selection;
         while (true) {
@@ -179,38 +189,32 @@ public class App {
             if (input.equalsIgnoreCase("q")) return null;
             try {
                 selection = Integer.parseInt(input);
-                if (selection < 1 || selection > dataService.getPossibleOutcomes().size()) {
+                if (selection < 1 || selection > outcomesAvailableForBetting.size()) {
                     throw new InputMismatchException();
                 }
-                Outcome chosenOutcome = dataService.getPossibleOutcomes().get(selection - 1);
-                if (userBets.containsKey(chosenOutcome)) {
-                    consoleView.write("You have already bet on this, try again:\n");
-                    continue;
-                }
-                return chosenOutcome;
+                return outcomesAvailableForBetting.get(selection - 1);
             } catch (Exception e) {
                 consoleView.write("Try again:\n");
             }
         }
     }
 
-    private void displayUserPrize(Map<Outcome, Wager> userBets) {
+    private void displayUserPrize(List<Wager> userBets, double prize) {
         if (userBets.isEmpty()) return;
 
         Player player = null;
-        double prize = 0;
-        for (Wager wager : userBets.values().stream()
-                .filter(Wager::isWin)
+        for (Wager wager : userBets.stream()
+                .filter(Wager::isWinner)
                 .collect(Collectors.toList())) {
             if (player == null) {
                 player = wager.getPlayer();
             }
 
-            consoleView.write(String.format("Your winner bet is Outcome %d %s%n",
+            consoleView.write(String.format("Your winner bet is Outcome %d %s; wage: %s; prize for that: %s%n",
                     dataService.getPossibleOutcomes().indexOf(wager.getOutcomeOdd().getOutcome()) + 1,
-                    wager.getOutcomeOdd()));
-
-            prize += wagerService.calculatePrize(wager);
+                    wager.getOutcomeOdd(),
+                    df.format(wager.getAmount()),
+                    df.format(wagerService.calculatePrize(wager))));
         }
 
         if (prize > 0) {

@@ -14,11 +14,11 @@ public class Wager {
     private Currency currency;
     private long timestamp;
     private boolean processed;
-    private boolean win;
+    private boolean winner;
 
     public Wager(SportEvent event, Player player, OutcomeOdd outcomeOdd,
                  double amount, Currency currency, long timestamp,
-                 boolean processed, boolean win) {
+                 boolean processed, boolean winner) {
         this.event = event;
         this.player = player;
         this.outcomeOdd = outcomeOdd;
@@ -26,7 +26,7 @@ public class Wager {
         this.currency = currency;
         this.timestamp = timestamp;
         this.processed = processed;
-        this.win = win;
+        this.winner = winner;
     }
 
     public SportEvent getEvent() {
@@ -61,8 +61,8 @@ public class Wager {
         return processed;
     }
 
-    public boolean isWin() {
-        return win;
+    public boolean isWinner() {
+        return winner;
     }
 
     public void setPlayer(Player player) {
@@ -89,7 +89,7 @@ public class Wager {
         this.processed = processed;
     }
 
-    public void setWin(boolean win) {
-        this.win = win;
+    public void setWinner(boolean winner) {
+        this.winner = winner;
     }
 }
