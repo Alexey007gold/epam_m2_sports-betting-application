@@ -10,6 +10,9 @@ public class Player extends User {
     private Currency currency;
     private LocalDate birthDate;
 
+    private Player() {
+    }
+
     public Player(String name, String accountNumber, double balance, Currency currency, LocalDate birthDate) {
         super(null, null, true);
         this.name = name;
@@ -45,5 +48,43 @@ public class Player extends User {
 
     public LocalDate getBirthDate() {
         return birthDate;
+    }
+
+    public static class Builder extends User.Builder<Builder> {
+
+        private Player player;
+
+        public Builder() {
+            this.player = new Player();
+        }
+
+        public Builder withName(String name) {
+            player.name = name;
+            return this;
+        }
+
+        public Builder withAccountNumber(String accountNumber) {
+            player.accountNumber = accountNumber;
+            return this;
+        }
+
+        public Builder withCurrency(Currency currency) {
+            player.currency = currency;
+            return this;
+        }
+
+        public Builder withBalance(double balance) {
+            player.balance = balance;
+            return this;
+        }
+
+        public Builder withBirthDate(LocalDate birthDate) {
+            player.birthDate = birthDate;
+            return self();
+        }
+
+        public Player build() {
+            return player;
+        }
     }
 }

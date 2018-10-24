@@ -113,9 +113,15 @@ public class App {
             if (wage == -1) return userBets;
             wage = uncheck(df::parse, df.format(wage)).doubleValue();
 
-            Wager wager = new Wager(chosenOutcome.getBet().getEvent(),
-                    player, chosenOutcome.getActiveOdd(), wage,
-                    player.getCurrency(), System.currentTimeMillis(), false, false);
+            Wager wager = new Wager.Builder()
+                    .withEvent(chosenOutcome.getBet().getEvent())
+                    .withPlayer(player)
+                    .withOutcomeOdd(chosenOutcome.getActiveOdd())
+                    .withAmount(wage)
+                    .withCurrency(player.getCurrency())
+                    .withTimestamp(System.currentTimeMillis())
+                    .build();
+
             userBets.add(wager);
 
             playerService.decreasePlayerBalance(player, wage);

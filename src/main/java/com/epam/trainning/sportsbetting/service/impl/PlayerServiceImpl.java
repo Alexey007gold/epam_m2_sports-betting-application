@@ -13,7 +13,14 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player registerPlayer(String name, String accNum, double balance, Currency currency, LocalDate birthDate) {
-        return new Player(name, accNum, balance, currency, birthDate);
+        return new Player.Builder()
+                .withEnabled(true)
+                .withName(name)
+                .withAccountNumber(accNum)
+                .withBalance(balance)
+                .withCurrency(currency)
+                .withBirthDate(birthDate)
+                .build();
     }
 
     @Override

@@ -16,9 +16,12 @@ public class Wager {
     private boolean processed;
     private boolean winner;
 
-    public Wager(SportEvent event, Player player, OutcomeOdd outcomeOdd,
-                 double amount, Currency currency, long timestamp,
-                 boolean processed, boolean winner) {
+    private Wager() {
+    }
+
+    private Wager(SportEvent event, Player player, OutcomeOdd outcomeOdd,
+                  double amount, Currency currency, long timestamp,
+                  boolean processed, boolean winner) {
         this.event = event;
         this.player = player;
         this.outcomeOdd = outcomeOdd;
@@ -91,5 +94,64 @@ public class Wager {
 
     public void setWinner(boolean winner) {
         this.winner = winner;
+    }
+
+
+    public static class Builder {
+
+        private Wager wager;
+
+        public Builder() {
+            this.wager = new Wager();
+        }
+
+        public Builder withSportEvent(SportEvent sportEvent) {
+            wager.setEvent(sportEvent);
+            return this;
+        }
+
+        public Builder withEvent(SportEvent event) {
+            wager.event = event;
+            return this;
+        }
+
+        public Builder withPlayer(Player player) {
+            wager.player = player;
+            return this;
+        }
+
+        public Builder withOutcomeOdd(OutcomeOdd outcomeOdd) {
+            wager.outcomeOdd = outcomeOdd;
+            return this;
+        }
+
+        public Builder withAmount(double amount) {
+            wager.amount = amount;
+            return this;
+        }
+
+        public Builder withCurrency(Currency currency) {
+            wager.currency = currency;
+            return this;
+        }
+
+        public Builder withTimestamp(long timestamp) {
+            wager.timestamp = timestamp;
+            return this;
+        }
+
+        public Builder withProcessed(boolean processed) {
+            wager.processed = processed;
+            return this;
+        }
+
+        public Builder withWinner(boolean winner) {
+            wager.winner = winner;
+            return this;
+        }
+
+        public Wager build() {
+            return wager;
+        }
     }
 }
