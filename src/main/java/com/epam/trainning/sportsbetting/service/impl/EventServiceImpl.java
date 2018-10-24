@@ -11,7 +11,9 @@ import java.util.Random;
 
 public class EventServiceImpl implements EventService {
 
-    public EventServiceImpl() {
+    private static final EventServiceImpl INSTANCE = new EventServiceImpl();
+
+    private EventServiceImpl() {
     }
 
     @Override
@@ -24,5 +26,9 @@ public class EventServiceImpl implements EventService {
             });
             event.setResult(new Result(outcomes));
         }
+    }
+
+    public static EventServiceImpl getInstance() {
+        return INSTANCE;
     }
 }

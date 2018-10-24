@@ -17,12 +17,16 @@ public class BetServiceImpl implements BetService {
 
     private PlayerService playerService;
 
-    public BetServiceImpl(PlayerService playerService) {
-        this.playerService = playerService;
+    private static final BetServiceImpl INSTANCE = new BetServiceImpl();
+
+    private BetServiceImpl() {
     }
 
     @Override
     public Map<Player, Double> processBets(List<Wager> userBets, List<SportEvent> events) {
+        if (playerService == null)
+            throw new IllegalStateException("PlayerService is not set");
+
         if (userBets.isEmpty()) return Collections.emptyMap();
 
         Set<Outcome> actualOutcomes = events.stream()
@@ -49,5 +53,13 @@ public class BetServiceImpl implements BetService {
         playerToPrize.forEach((player, prize) -> playerService.increasePlayerBalance(player, prize));
 
         return playerToPrize;
+    }
+
+    public static BetServiceImpl getInstance() {
+        return INSTANCE;
+    }
+
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
     }
 }

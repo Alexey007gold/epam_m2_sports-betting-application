@@ -11,8 +11,6 @@ import com.epam.trainning.sportsbetting.service.*;
 import com.epam.trainning.sportsbetting.service.impl.*;
 import com.epam.trainning.sportsbetting.ui.ConsoleView;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,17 +32,18 @@ public class App {
     private PlayerService playerService;
     private WagerService wagerService;
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) {
         new App().run();
     }
 
-    public App() throws IOException, URISyntaxException {
+    public App() {
         this.consoleView = new ConsoleView();
-        this.dataService = new DataServiceImpl();
-        this.eventService = new EventServiceImpl();
-        this.playerService = new PlayerServiceImpl();
-        this.wagerService = new WagerServiceImpl();
-        this.betService = new BetServiceImpl(playerService);
+        this.dataService = DataServiceImpl.getInstance();
+        this.eventService = EventServiceImpl.getInstance();
+        this.playerService = PlayerServiceImpl.getInstance();
+        this.wagerService = WagerServiceImpl.getInstance();
+        this.betService = BetServiceImpl.getInstance();
+        ((BetServiceImpl) this.betService).setPlayerService(playerService);
     }
 
     private void run() {

@@ -8,7 +8,9 @@ import java.time.LocalDate;
 
 public class PlayerServiceImpl implements PlayerService {
 
-    public PlayerServiceImpl() {
+    private static final PlayerServiceImpl INSTANCE = new PlayerServiceImpl();
+
+    private PlayerServiceImpl() {
     }
 
     @Override
@@ -37,5 +39,9 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public boolean canMakeWager(Player player, double wage) {
         return player.getBalance() >= wage;
+    }
+
+    public static PlayerServiceImpl getInstance() {
+        return INSTANCE;
     }
 }

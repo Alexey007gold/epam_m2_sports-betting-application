@@ -24,7 +24,17 @@ public class DataServiceImpl implements DataService {
     private List<Bet> availableBets;
     private List<Outcome> possibleOutcomes;
 
-    public DataServiceImpl() throws IOException, URISyntaxException {
+    private static final DataServiceImpl INSTANCE;
+
+    static {
+        try {
+            INSTANCE = new DataServiceImpl();
+        } catch (IOException | URISyntaxException e) {
+            throw new IllegalStateException("Could not initialize DataServiceImpl");
+        }
+    }
+
+    private DataServiceImpl() throws IOException, URISyntaxException {
         initEventData();
     }
 
@@ -87,5 +97,9 @@ public class DataServiceImpl implements DataService {
     @Override
     public List<Outcome> getPossibleOutcomes() {
         return possibleOutcomes;
+    }
+
+    public static DataServiceImpl getInstance() {
+        return INSTANCE;
     }
 }
