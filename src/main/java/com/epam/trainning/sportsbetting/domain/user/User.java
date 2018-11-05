@@ -30,10 +30,14 @@ public class User {
 
     public static class Builder<T extends Builder<T>> {
 
-        private User user;
+        protected User user;
 
         public Builder() {
             this.user = new User();
+        }
+
+        protected Builder(User user) {
+            this.user = user;
         }
 
         public T withEmail(String email) {

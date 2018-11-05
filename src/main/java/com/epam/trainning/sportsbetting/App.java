@@ -23,7 +23,7 @@ import static com.epam.trainning.sportsbetting.exception.ExceptionUtil.uncheck;
 public class App {
 
     private static final DecimalFormat df = new DecimalFormat("###.##");
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
     private ConsoleView consoleView;
     private DataService dataService;
@@ -179,6 +179,7 @@ public class App {
     /**
      * Lets the user to choose an outcome from the list of possible outcomes
      * User cannot choose
+     *
      * @param outcomesAvailableForBetting
      * @return
      */
@@ -220,6 +221,9 @@ public class App {
                     wager.getOutcomeOdd(),
                     df.format(wager.getAmount()),
                     df.format(wagerService.calculatePrize(wager))));
+        }
+        if (player == null && prize > 0) {
+            throw new IllegalStateException("Prize cannot be positive when no wager is winner");
         }
 
         if (prize > 0) {

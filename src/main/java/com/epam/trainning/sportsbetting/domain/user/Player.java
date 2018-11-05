@@ -55,7 +55,7 @@ public class Player extends User {
         private Player player;
 
         public Builder() {
-            this.player = new Player();
+            this.user = this.player = new Player();
         }
 
         public Builder withName(String name) {
