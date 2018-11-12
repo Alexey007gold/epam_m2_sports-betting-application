@@ -1,9 +1,10 @@
 package com.epam.training.sportsbetting.ui;
 
+import com.cookingfox.guava_preconditions.Preconditions;
+
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ConsoleView {
@@ -21,13 +22,17 @@ public class ConsoleView {
         return in.nextLine();
     }
 
+    /**
+     * Returns a String with non-zero length
+     * @return
+     */
     public String getNonEmptyStringInput() {
         while (true) {
             try {
                 String input = in.nextLine();
-                if (input.isEmpty()) {
-                    throw new InputMismatchException();
-                }
+
+                Preconditions.checkArgument(!input.isEmpty());
+
                 return input;
             } catch (Exception e) {
                 out.println(TRY_AGAIN);
@@ -48,13 +53,17 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Returns an integer greater than 0
+     * @return
+     */
     public int getPositiveIntInput() {
         while (true) {
             try {
                 int integer = in.nextInt();
-                if (integer <= 0) {
-                    throw new InputMismatchException();
-                }
+
+                Preconditions.checkArgument(integer > 0);
+
                 in.nextLine();
                 return integer;
             } catch (Exception e) {
@@ -64,13 +73,17 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Returns an integer not less than 'from' param and not greater than 'to' param
+     * @return
+     */
     public int getIntInputWithinRange(int from, int to) {
         while (true) {
             try {
                 int integer = in.nextInt();
-                if (integer < from || integer > to) {
-                    throw new InputMismatchException();
-                }
+
+                Preconditions.checkArgument(integer >= from && integer <= to);
+
                 in.nextLine();
                 return integer;
             } catch (Exception e) {

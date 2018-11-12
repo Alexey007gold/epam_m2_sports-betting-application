@@ -297,7 +297,7 @@ class AppTest {
         when(consoleView.getNonEmptyStringInput()).thenReturn(name, acc);
         when(consoleView.getPositiveIntInput()).thenReturn(Integer.parseInt(balance));
         when(consoleView.getStringInput(anyString())).thenReturn(currency);
-        when(consoleView.getStringInput()).thenReturn("1", "0", "q");
+        when(consoleView.getStringInput()).thenReturn("1", "1", "q");
         when(consoleView.getDateInput()).thenReturn(birthDate);
         when(playerService.canMakeWager(any(), anyDouble())).thenReturn(true);
         when(playerService.registerPlayer(anyString(), anyString(), anyDouble(), any(), any()))

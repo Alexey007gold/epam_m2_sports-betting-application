@@ -1,5 +1,6 @@
 package com.epam.training.sportsbetting;
 
+import com.cookingfox.guava_preconditions.Preconditions;
 import com.epam.training.sportsbetting.domain.bet.Bet;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.outcome.OutcomeOdd;
@@ -16,7 +17,10 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class App {
@@ -156,15 +160,20 @@ public class App {
         }
     }
 
+    /**
+     * Returns double value greater than 0 or -1 if user wishes to quit
+     * @param player
+     * @return
+     */
     private double getWage(Player player) {
         while (true) {
             String input = consoleView.getStringInput();
             if (input.equalsIgnoreCase("q")) return -1;
             try {
                 double wage = Double.parseDouble(input);
-                if (wage < 0) {
-                    throw new InputMismatchException();
-                }
+
+                Preconditions.checkArgument(wage > 0);
+
                 if (!playerService.canMakeWager(player, wage)) {
                     consoleView.write(String.format("You don't have enough money, your balance is %s %s%n",
                             df.format(player.getBalance()), player.getCurrency()));
@@ -178,8 +187,8 @@ public class App {
     }
 
     /**
-     * Lets the user to choose an outcome from the list of possible outcomes
-     * User cannot choose
+     * Lets the user choose an outcome from the list of possible outcomes
+     * or null if user wishes to quit
      *
      * @param outcomesAvailableForBetting
      * @return
@@ -196,9 +205,9 @@ public class App {
             if (input.equalsIgnoreCase("q")) return null;
             try {
                 selection = Integer.parseInt(input);
-                if (selection < 1 || selection > outcomesAvailableForBetting.size()) {
-                    throw new InputMismatchException();
-                }
+
+                Preconditions.checkArgument(selection > 0 && selection <= outcomesAvailableForBetting.size());
+
                 return outcomesAvailableForBetting.get(selection - 1);
             } catch (Exception e) {
                 consoleView.write("Try again:\n");
