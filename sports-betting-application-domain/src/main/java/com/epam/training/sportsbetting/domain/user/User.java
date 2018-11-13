@@ -1,5 +1,7 @@
 package com.epam.training.sportsbetting.domain.user;
 
+import java.util.Arrays;
+
 public class User {
 
     private String email;
@@ -20,7 +22,8 @@ public class User {
     }
 
     public char[] getPassword() {
-        return password;
+        if (password == null) return null;
+        return Arrays.copyOf(password, password.length);
     }
 
     public boolean isEnabled() {

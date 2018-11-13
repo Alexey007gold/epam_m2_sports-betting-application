@@ -3,6 +3,8 @@ package com.epam.training.sportsbetting.ui;
 import com.cookingfox.guava_preconditions.Preconditions;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -11,8 +13,16 @@ public class ConsoleView {
 
     private static final String TRY_AGAIN = "Try again: ";
 
-    private ScannerWrapper in = new ScannerWrapper(new Scanner(System.in));
-    private PrintStream out = new PrintStream(System.out);
+    private ScannerWrapper in = new ScannerWrapper(new Scanner(System.in, StandardCharsets.UTF_8.name()));
+    private PrintStream out;
+
+    public ConsoleView() {
+        try {
+            out = new PrintStream(System.out, true, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     public void write(String message) {
         out.print(message);
