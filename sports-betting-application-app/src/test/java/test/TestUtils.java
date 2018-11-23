@@ -6,6 +6,7 @@ import com.epam.training.sportsbetting.service.impl.DataServiceImpl;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 public class TestUtils {
@@ -27,6 +28,17 @@ public class TestUtils {
     public static void setPrivateField(Object target, String fieldName, Object value) throws Exception {
         Field declaredField = target.getClass().getDeclaredField(fieldName);
         declaredField.setAccessible(true);
+        declaredField.set(target, value);
+    }
+
+    public static void setPrivateFinalField(Class<?> target, String fieldName, Object value) throws Exception {
+        Field declaredField = target.getDeclaredField(fieldName);
+        declaredField.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(declaredField, declaredField.getModifiers() & ~Modifier.FINAL);
+
         declaredField.set(target, value);
     }
 

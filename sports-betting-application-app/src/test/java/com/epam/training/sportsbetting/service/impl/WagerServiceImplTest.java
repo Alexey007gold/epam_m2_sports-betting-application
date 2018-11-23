@@ -1,40 +1,43 @@
 package com.epam.training.sportsbetting.service.impl;
 
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
-import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
+import com.epam.training.sportsbetting.domain.outcome.OutcomeOdd;
 import com.epam.training.sportsbetting.domain.wager.Wager;
-import com.epam.training.sportsbetting.service.DataService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Constructor;
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class WagerServiceImplTest {
 
     private WagerServiceImpl wagerService = WagerServiceImpl.getInstance();
-    private DataService dataService;
-
-    @BeforeEach
-    @SuppressWarnings("unchecked")
-    void setUp() throws Exception {
-        Constructor<DataServiceImpl> declaredConstructor =
-                (Constructor<DataServiceImpl>) DataServiceImpl.class.getDeclaredConstructors()[0];
-        declaredConstructor.setAccessible(true);
-        dataService = declaredConstructor.newInstance();
-    }
 
     @Test
     void shouldReturnCorrectResultOnCalculatePrize() {
-        Outcome outcome1 = dataService.getPossibleOutcomes().get(0);
-        SportEvent event1 = outcome1.getBet().getEvent();
+        Outcome outcome1 = getOutcome();
         Wager wager = new Wager.Builder()
-                .withEvent(event1)
-                .withOutcomeOdd(outcome1.getOutcomeOdds().get(0))
-                .withAmount(5)
-                .withTimestamp(System.currentTimeMillis())
-                .build();
+            .withOutcomeOdd(outcome1.getOutcomeOdds().get(0))
+            .withAmount(5)
+            .build();
         assertEquals(20, wagerService.calculatePrize(wager));
+    }
+
+    private Outcome getOutcome() {
+        Outcome outcome = new Outcome("Southampton");
+        OutcomeOdd odd1 = new OutcomeOdd(outcome, 4,
+            LocalDateTime.parse("2018-09-23T19:00"), LocalDateTime.parse("2018-09-30T18:59"));
+        outcome.setOutcomeOdds(Collections.singletonList(odd1));
+        return outcome;
+    }
+
+    @Test
+    void shouldThrowAnExceptionOnCalculatePrize() {
+        Wager wager = new Wager.Builder()
+            .withAmount(5)
+            .build();
+        assertThrows(NullPointerException.class, () -> wagerService.calculatePrize(wager));
     }
 }

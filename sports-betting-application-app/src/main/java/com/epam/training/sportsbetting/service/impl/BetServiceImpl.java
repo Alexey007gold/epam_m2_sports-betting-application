@@ -1,5 +1,6 @@
 package com.epam.training.sportsbetting.service.impl;
 
+import com.cookingfox.guava_preconditions.Preconditions;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.user.Player;
@@ -24,8 +25,7 @@ public class BetServiceImpl implements BetService {
 
     @Override
     public Map<Player, Double> processBets(List<Wager> userBets, List<SportEvent> events) {
-        if (playerService == null)
-            throw new IllegalStateException("PlayerService is not set");
+        Preconditions.checkArgument(playerService != null, "PlayerService is not set");
 
         if (userBets.isEmpty()) return Collections.emptyMap();
 
