@@ -10,14 +10,12 @@ import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.service.PlayerService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import test.TestUtils;
 
-import java.lang.reflect.Constructor;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -36,20 +33,11 @@ class BetServiceImplTest {
     @Mock
     private PlayerService playerService;
 
-    private BetServiceImpl betService = BetServiceImpl.getInstance();
-
-    @BeforeEach
-    @SuppressWarnings("unchecked")
-    void setUp() throws Exception {
-        Constructor<BetServiceImpl> declaredConstructor =
-            (Constructor<BetServiceImpl>) BetServiceImpl.class.getDeclaredConstructors()[0];
-        declaredConstructor.setAccessible(true);
-        TestUtils.setPrivateFinalField(BetServiceImpl.class, "INSTANCE", declaredConstructor.newInstance());
-    }
+    @InjectMocks
+    private BetServiceImpl betService;
 
     @Test
     void shouldReturnCorrectResultOnProcessBets() {
-        betService.setPlayerService(playerService);
         Player player = new Player.Builder()
             .withName("John")
             .withBalance(100)
@@ -86,13 +74,7 @@ class BetServiceImplTest {
     }
 
     @Test
-    void shouldThrowAnExceptionOnProcessBets() {
-        assertThrows(IllegalArgumentException.class, () -> betService.processBets(null, Collections.emptyList()));
-    }
-
-    @Test
     void shouldReturnEmptyMapOnProcessBets() {
-        betService.setPlayerService(playerService);
         betService.processBets(Collections.emptyList(), Collections.emptyList());
     }
 

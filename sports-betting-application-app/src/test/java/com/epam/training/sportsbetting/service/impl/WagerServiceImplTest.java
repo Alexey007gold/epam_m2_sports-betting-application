@@ -4,6 +4,9 @@ import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.outcome.OutcomeOdd;
 import com.epam.training.sportsbetting.domain.wager.Wager;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -11,9 +14,11 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 class WagerServiceImplTest {
 
-    private WagerServiceImpl wagerService = WagerServiceImpl.getInstance();
+    @InjectMocks
+    private WagerServiceImpl wagerService;
 
     @Test
     void shouldReturnCorrectResultOnCalculatePrize() {

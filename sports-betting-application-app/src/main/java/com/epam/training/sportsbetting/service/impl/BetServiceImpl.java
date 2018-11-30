@@ -1,12 +1,13 @@
 package com.epam.training.sportsbetting.service.impl;
 
-import com.cookingfox.guava_preconditions.Preconditions;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.service.BetService;
 import com.epam.training.sportsbetting.service.PlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
@@ -14,19 +15,18 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
+@Service
 public class BetServiceImpl implements BetService {
 
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
-    private static final BetServiceImpl INSTANCE = new BetServiceImpl();
-
-    private BetServiceImpl() {
+    @Autowired
+    public BetServiceImpl(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @Override
     public Map<Player, Double> processBets(List<Wager> userBets, List<SportEvent> events) {
-        Preconditions.checkArgument(playerService != null, "PlayerService is not set");
-
         if (userBets.isEmpty()) return Collections.emptyMap();
 
         Set<Outcome> actualOutcomes = events.stream()
@@ -50,16 +50,8 @@ public class BetServiceImpl implements BetService {
             }
         }
 
-        playerToPrize.forEach((player, prize) -> playerService.increasePlayerBalance(player, prize));
+        playerToPrize.forEach(playerService::increasePlayerBalance);
 
         return playerToPrize;
-    }
-
-    public static BetServiceImpl getInstance() {
-        return INSTANCE;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
     }
 }

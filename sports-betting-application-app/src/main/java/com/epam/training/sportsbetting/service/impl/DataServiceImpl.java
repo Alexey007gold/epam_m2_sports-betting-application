@@ -7,7 +7,9 @@ import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.service.DataService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -15,26 +17,14 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Service
 public class DataServiceImpl implements DataService {
 
     private List<SportEvent> events;
     private List<Bet> availableBets;
     private List<Outcome> possibleOutcomes;
 
-    private static final DataServiceImpl INSTANCE;
-
-    static {
-        try {
-            INSTANCE = new DataServiceImpl();
-        } catch (IOException e) {
-            throw new IllegalStateException("Could not initialize DataServiceImpl");
-        }
-    }
-
-    private DataServiceImpl() throws IOException {
-        initEventData();
-    }
-
+    @PostConstruct
     private void initEventData() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -94,9 +84,5 @@ public class DataServiceImpl implements DataService {
     @Override
     public List<Outcome> getPossibleOutcomes() {
         return possibleOutcomes;
-    }
-
-    public static DataServiceImpl getInstance() {
-        return INSTANCE;
     }
 }
