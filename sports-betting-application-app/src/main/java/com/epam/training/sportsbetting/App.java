@@ -10,8 +10,9 @@ import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.exception.ExceptionUtil;
 import com.epam.training.sportsbetting.service.*;
-import com.epam.training.sportsbetting.service.impl.*;
 import com.epam.training.sportsbetting.ui.ConsoleView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -23,30 +24,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Controller
 public class App {
 
     private static final DecimalFormat df = new DecimalFormat("###.##");
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
-    private ConsoleView consoleView;
-    private DataService dataService;
-    private EventService eventService;
-    private BetService betService;
-    private PlayerService playerService;
-    private WagerService wagerService;
+    private final ConsoleView consoleView;
+    private final DataService dataService;
+    private final EventService eventService;
+    private final BetService betService;
+    private final PlayerService playerService;
+    private final WagerService wagerService;
 
-    public static void main(String[] args) {
-        new App().run();
-    }
-
-    public App() {
-        this.consoleView = new ConsoleView();
-        this.dataService = DataServiceImpl.getInstance();
-        this.eventService = EventServiceImpl.getInstance();
-        this.playerService = PlayerServiceImpl.getInstance();
-        this.wagerService = WagerServiceImpl.getInstance();
-        this.betService = BetServiceImpl.getInstance();
-        ((BetServiceImpl) this.betService).setPlayerService(playerService);
+    @Autowired
+    public App(ConsoleView consoleView, DataService dataService,
+               EventService eventService, BetService betService,
+               PlayerService playerService, WagerService wagerService) {
+        this.consoleView = consoleView;
+        this.dataService = dataService;
+        this.eventService = eventService;
+        this.betService = betService;
+        this.playerService = playerService;
+        this.wagerService = wagerService;
     }
 
     private void run() {
