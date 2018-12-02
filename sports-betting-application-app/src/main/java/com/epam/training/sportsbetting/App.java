@@ -12,6 +12,8 @@ import com.epam.training.sportsbetting.exception.ExceptionUtil;
 import com.epam.training.sportsbetting.service.*;
 import com.epam.training.sportsbetting.ui.ConsoleView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.text.DecimalFormat;
@@ -47,6 +49,13 @@ public class App {
         this.betService = betService;
         this.playerService = playerService;
         this.wagerService = wagerService;
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext ctx =
+                new AnnotationConfigApplicationContext("com.epam.training.sportsbetting");
+
+        ctx.getBean(App.class).run();
     }
 
     private void run() {
