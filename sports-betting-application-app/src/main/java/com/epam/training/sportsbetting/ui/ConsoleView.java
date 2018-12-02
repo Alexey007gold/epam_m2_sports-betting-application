@@ -1,6 +1,8 @@
 package com.epam.training.sportsbetting.ui;
 
 import com.cookingfox.guava_preconditions.Preconditions;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+@Component
 public class ConsoleView {
 
     private static final String TRY_AGAIN = "Try again: ";

@@ -3,15 +3,12 @@ package com.epam.training.sportsbetting.service.impl;
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.service.PlayerService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+@Service
 public class PlayerServiceImpl implements PlayerService {
-
-    private static final PlayerServiceImpl INSTANCE = new PlayerServiceImpl();
-
-    private PlayerServiceImpl() {
-    }
 
     @Override
     public Player registerPlayer(String name, String accNum, double balance, Currency currency, LocalDate birthDate) {
@@ -39,9 +36,5 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public boolean canMakeWager(Player player, double wage) {
         return player.getBalance() >= wage;
-    }
-
-    public static PlayerServiceImpl getInstance() {
-        return INSTANCE;
     }
 }

@@ -3,14 +3,19 @@ package com.epam.training.sportsbetting.service.impl;
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class PlayerServiceImplTest {
 
-    private PlayerServiceImpl playerService = PlayerServiceImpl.getInstance();
+    @InjectMocks
+    private PlayerServiceImpl playerService;
 
     @Test
     void shouldReturnCorrectResultOnRegisterPlayer() {

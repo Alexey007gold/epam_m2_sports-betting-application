@@ -8,6 +8,9 @@ import com.epam.training.sportsbetting.domain.sportevent.Result;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.sportevent.TennisSportEvent;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,9 +20,11 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class EventServiceImplTest {
 
-    private EventServiceImpl eventService = EventServiceImpl.getInstance();
+    @InjectMocks
+    private EventServiceImpl eventService;
 
     @Test
     void shouldSetRandomizedResultsToEventsOnPlayEvents() {
