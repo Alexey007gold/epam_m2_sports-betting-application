@@ -11,6 +11,7 @@ import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.exception.ExceptionUtil;
 import com.epam.training.sportsbetting.service.*;
 import com.epam.training.sportsbetting.ui.ConsoleView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -20,13 +21,11 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
+@Slf4j
 public class App {
 
     private static final DecimalFormat df = new DecimalFormat("###.##");
@@ -39,22 +38,29 @@ public class App {
     private final PlayerService playerService;
     private final WagerService wagerService;
 
+    private final I18NService i18N;
+
     @Autowired
     public App(ConsoleView consoleView, DataService dataService,
                EventService eventService, BetService betService,
-               PlayerService playerService, WagerService wagerService) {
+               PlayerService playerService, WagerService wagerService,
+               I18NService i18N) {
         this.consoleView = consoleView;
         this.dataService = dataService;
         this.eventService = eventService;
         this.betService = betService;
         this.playerService = playerService;
         this.wagerService = wagerService;
+        this.i18N = i18N;
     }
 
     public static void main(String[] args) {
+        Locale.setDefault(Locale.forLanguageTag("ru"));
+        log.info("Creating context");
         ApplicationContext ctx =
                 new AnnotationConfigApplicationContext("com.epam.training.sportsbetting");
 
+        log.info("Running application");
         ctx.getBean(App.class).run();
     }
 
@@ -78,17 +84,17 @@ public class App {
     }
 
     private Player getPlayer() {
-        consoleView.write("Hi, what is your name?\n");
+        consoleView.line(i18N.getMessage("code.name"));
         String name = consoleView.getNonEmptyStringInput();
-        consoleView.write("What is your account number?\n");
+        consoleView.line(i18N.getMessage("code.account"));
         String accountNumber = consoleView.getNonEmptyStringInput();
-        consoleView.write("How much money do you have (more than 0)?\n");
+        consoleView.line(i18N.getMessage("code.money"));
         int balance = consoleView.getPositiveIntInput();
         String currencyPattern = getCurrencyPattern();
-        consoleView.write(String.format("What is your currency? (%s)%n", currencyPattern));
+        consoleView.line(String.format(i18N.getMessage("code.currency"), currencyPattern));
         currencyPattern = currencyPattern + "|" + currencyPattern.toLowerCase();
-        com.epam.training.sportsbetting.domain.user.Currency currency = com.epam.training.sportsbetting.domain.user.Currency.valueOf(consoleView.getStringInput(currencyPattern).toUpperCase());
-        consoleView.write("When were you born? eg.:1990-02-03\n");
+        Currency currency = Currency.valueOf(consoleView.getStringInput(currencyPattern).toUpperCase());
+        consoleView.line(i18N.getMessage("code.birthday"));
 
         LocalDate birthDate = consoleView.getDateInput();
 
@@ -96,10 +102,10 @@ public class App {
     }
 
     private void displayResults(List<SportEvent> eventsToDisplay) {
-        consoleView.write("Events results:\n");
+        consoleView.line(i18N.getMessage("code.event.results"));
         for (SportEvent event : eventsToDisplay) {
             for (Outcome outcome : event.getResult().getOutcomes()) {
-                consoleView.write(String.format(" - Event: %s The winner is Outcome %d, %s: %s%n",
+                consoleView.write(String.format(i18N.getMessage("code.event.winner"),
                         event.getTitle(), dataService.getPossibleOutcomes().indexOf(outcome) + 1,
                         outcome.getBet(), outcome.getValue()));
             }
@@ -121,7 +127,7 @@ public class App {
             Outcome chosenOutcome = chooseOutcome(outcomesAvailableForBetting);
             if (chosenOutcome == null) return userBets;
 
-            consoleView.write("How much do you want to bet on it? (q for quit)\n");
+            consoleView.line(i18N.getMessage("code.bet"));
             double wage = getWage(player);
             if (wage == -1) return userBets;
             wage = ExceptionUtil.uncheck(df::parse, df.format(wage)).doubleValue();
@@ -139,14 +145,14 @@ public class App {
 
             playerService.decreasePlayerBalance(player, wage);
 
-            consoleView.write(String.format("Your new balance is %s %s%n", df.format(player.getBalance()), player.getCurrency()));
+            consoleView.write(String.format(i18N.getMessage("code.balance.new"), df.format(player.getBalance()), player.getCurrency()));
         }
     }
 
     private void printBetMenu(List<Outcome> outcomesAvailableForBetting) {
-        consoleView.write("Please choose an outcome to bet on! (choose a number or press q for quit)\n");
+        consoleView.line(i18N.getMessage("code.outcome.choose"));
         if (outcomesAvailableForBetting.isEmpty()) {
-            consoleView.write("No available bets found! Try again later.");
+            consoleView.write(i18N.getMessage("code.bet.notfound"));
         }
 
         for (int i = 0; i < outcomesAvailableForBetting.size(); i++) {
@@ -156,14 +162,14 @@ public class App {
 
             String betDescription = null;
             if (bet.getBetType() == Bet.BetType.GOAL) {
-                betDescription = "the number of scored goals will be " + outcome.getValue();
+                betDescription = i18N.getMessage("code.goals.number") + " " + outcome.getValue();
             } else if (bet.getBetType() == Bet.BetType.SCORE) {
                 betDescription = bet.getDescription() + " " + outcome.getValue();
             } else if (bet.getBetType() == Bet.BetType.WINNER) {
-                betDescription = "the winner will be " + outcome.getValue();
+                betDescription = i18N.getMessage("code.winner") + " " + outcome.getValue();
             }
 
-            consoleView.write(String.format("%d: Bet on the %s sport event, %s. The odd on this is %s, valid from %s to %s%n",
+            consoleView.write(String.format(i18N.getMessage("code.bet.description"),
                     i + 1, bet.getEvent().getTitle(), betDescription, odd.getValue(),
                     odd.getValidFrom().format(dtf), odd.getValidTo().format(dtf)));
         }
@@ -184,13 +190,13 @@ public class App {
                 Preconditions.checkArgument(wage > 0);
 
                 if (!playerService.canMakeWager(player, wage)) {
-                    consoleView.write(String.format("You don't have enough money, your balance is %s %s%n",
+                    consoleView.write(String.format(i18N.getMessage("code.money.notenough"),
                             df.format(player.getBalance()), player.getCurrency()));
                     continue;
                 }
                 return wage;
             } catch (Exception e) {
-                consoleView.write("Try again:\n");
+                consoleView.line(i18N.getMessage("code.tryagain"));
             }
         }
     }
@@ -219,7 +225,7 @@ public class App {
 
                 return outcomesAvailableForBetting.get(selection - 1);
             } catch (Exception e) {
-                consoleView.write("Try again:\n");
+                consoleView.line(i18N.getMessage("code.tryagain"));
             }
         }
     }
@@ -235,27 +241,27 @@ public class App {
                 player = wager.getPlayer();
             }
 
-            consoleView.write(String.format("Your winner bet is Outcome %d %s; wage: %s; prize for that: %s%n",
+            consoleView.write(String.format(i18N.getMessage("code.bet.winner"),
                     dataService.getPossibleOutcomes().indexOf(wager.getOutcomeOdd().getOutcome()) + 1,
                     wager.getOutcomeOdd(),
                     df.format(wager.getAmount()),
                     df.format(wagerService.calculatePrize(wager))));
         }
         if (player == null && prize > 0) {
-            throw new IllegalStateException("Prize cannot be positive when no wager is winner");
+            throw new IllegalStateException(i18N.getMessage("code.prize.nonpozitive"));
         }
 
         if (prize > 0) {
-            consoleView.write(String.format("You have won %s %s%n", df.format(prize), player.getCurrency()));
-            consoleView.write(String.format("Your new balance is %s %s%n", df.format(player.getBalance()), player.getCurrency()));
+            consoleView.write(String.format(i18N.getMessage("code.won"), df.format(prize), player.getCurrency()));
+            consoleView.write(String.format(i18N.getMessage("code.balance.new"), df.format(player.getBalance()), player.getCurrency()));
         } else {
-            consoleView.write("Unfortunately you haven't won anything");
+            consoleView.write(i18N.getMessage("code.won.zero"));
         }
     }
 
     private void sayHello(Player player) {
-        consoleView.write(String.format("Hello %s!%n", player.getName()));
-        consoleView.write(String.format("Your balance is %s %s%n", df.format(player.getBalance()), player.getCurrency()));
+        consoleView.write(String.format(i18N.getMessage("code.hello"), player.getName()));
+        consoleView.write(String.format(i18N.getMessage("code.balance.new"), df.format(player.getBalance()), player.getCurrency()));
     }
 
     private String getCurrencyPattern() {

@@ -1,7 +1,11 @@
 package com.epam.training.sportsbetting.ui;
 
+import com.epam.training.sportsbetting.service.I18NService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.PrintStream;
 import java.lang.reflect.Field;
@@ -11,15 +15,22 @@ import java.util.InputMismatchException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ConsoleViewTest {
 
-    private ConsoleView consoleView = new ConsoleView();
+    @Mock
+    private I18NService i18N;
+
+    private ConsoleView consoleView;
 
     private ConsoleView.ScannerWrapper scanner;
     private PrintStream printStreamMock;
 
     @BeforeEach
     void setUp() throws Exception {
+        when(i18N.getMessage(anyString())).thenReturn("msg");
+        consoleView = new ConsoleView(i18N);
+
         scanner = mock(ConsoleView.ScannerWrapper.class);
         printStreamMock = mock(PrintStream.class);
         Field inField = ConsoleView.class.getDeclaredField("in");
@@ -54,7 +65,7 @@ class ConsoleViewTest {
         String result = consoleView.getNonEmptyStringInput();
 
         verify(scanner, times(2)).nextLine();
-        verify(printStreamMock).println("Try again: ");
+        verify(printStreamMock).println("msg");
         assertEquals("str", result);
     }
 
@@ -67,7 +78,7 @@ class ConsoleViewTest {
 
         verify(scanner, times(2)).next("pattern");
         verify(scanner, times(2)).nextLine();
-        verify(printStreamMock).println("Try again: ");
+        verify(printStreamMock).println("msg");
         assertEquals("msg", result);
     }
 
@@ -80,7 +91,7 @@ class ConsoleViewTest {
 
         verify(scanner, times(3)).nextInt();
         verify(scanner, times(3)).nextLine();
-        verify(printStreamMock, times(2)).println("Try again: ");
+        verify(printStreamMock, times(2)).println("msg");
         assertEquals(2, result);
     }
 
@@ -93,7 +104,7 @@ class ConsoleViewTest {
 
         verify(scanner, times(2)).nextInt();
         verify(scanner, times(2)).nextLine();
-        verify(printStreamMock).println("Try again: ");
+        verify(printStreamMock).println("msg");
         assertEquals(2, result);
     }
 
@@ -104,12 +115,14 @@ class ConsoleViewTest {
                 LocalDate.now().plusDays(1).toString(),
                 "1111-11-11");
 
+        when(i18N.getMessage(anyString())).thenReturn("msg1", "msg1", "msg2", "msg3");
+
         LocalDate result = consoleView.getDateInput();
 
         verify(scanner, times(5)).nextLine();
-        verify(printStreamMock, times(2)).println("Invalid date");
-        verify(printStreamMock, times(1)).println("Only people aged 18 or more are allowed. Try again: ");
-        verify(printStreamMock, times(1)).println("Date should be in the past. Try again: ");
+        verify(printStreamMock, times(2)).println("msg1");
+        verify(printStreamMock, times(1)).println("msg2 msg");
+        verify(printStreamMock, times(1)).println("msg3 msg");
         assertEquals(LocalDate.parse("1111-11-11"), result);
     }
 }
