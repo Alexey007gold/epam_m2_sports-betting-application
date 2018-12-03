@@ -1,8 +1,9 @@
 package com.epam.training.sportsbetting.ui;
 
 import com.cookingfox.guava_preconditions.Preconditions;
+import com.epam.training.sportsbetting.service.I18NService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -14,14 +15,19 @@ import java.util.Scanner;
 @Component
 public class ConsoleView {
 
-    private static final String TRY_AGAIN = "Try again: ";
+    private final String TRY_AGAIN;
 
-    private ScannerWrapper in = new ScannerWrapper(new Scanner(System.in, StandardCharsets.UTF_8.name()));
-    private PrintStream out;
+    private final ScannerWrapper in = new ScannerWrapper(new Scanner(System.in, StandardCharsets.UTF_8.name()));
+    private final PrintStream out;
 
-    public ConsoleView() {
+    private I18NService i18N;
+
+    @Autowired
+    public ConsoleView(I18NService i18N) {
+        this.i18N = i18N;
+        this.TRY_AGAIN = i18N.getMessage("code.tryagain");
         try {
-            out = new PrintStream(System.out, true, StandardCharsets.UTF_8.name());
+            this.out = new PrintStream(System.out, true, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
@@ -29,6 +35,10 @@ public class ConsoleView {
 
     public void write(String message) {
         out.print(message);
+    }
+
+    public void line(String message) {
+        out.println(message);
     }
 
     public String getStringInput() {
@@ -111,14 +121,14 @@ public class ConsoleView {
             try {
                 LocalDate localDate = LocalDate.parse(getStringInput("\\d{4}-\\d{2}-\\d{2}"));
                 if (localDate.isAfter(LocalDate.now())) {
-                    out.println("Date should be in the past. " + TRY_AGAIN);
+                    out.println(i18N.getMessage("code.date.past") + " " + TRY_AGAIN);
                 } else if (localDate.isAfter(LocalDate.now().minusYears(18))) {
-                    out.println("Only people aged 18 or more are allowed. " + TRY_AGAIN);
+                    out.println(i18N.getMessage("code.18plus") + " " + TRY_AGAIN);
                 } else {
                     return localDate;
                 }
             } catch (DateTimeParseException e) {
-                out.println("Invalid date");
+                out.println(i18N.getMessage("code.date.invalid"));
             }
         }
     }
