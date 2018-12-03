@@ -3,12 +3,9 @@ package com.epam.training.sportsbetting.domain.outcome;
 import com.epam.training.sportsbetting.domain.bet.Bet;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Outcome {
-
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
     private String value;
     private List<OutcomeOdd> outcomeOdds;
@@ -67,8 +64,10 @@ public class Outcome {
 
     @Override
     public String toString() {
-        return "[" +
-                "value=" + getValue() +
-                ']';
+        return "Outcome{" +
+            "value='" + value + '\'' +
+            ", outcomeOdds=" + outcomeOdds +
+            ", bet=" + bet +
+            '}';
     }
 }
