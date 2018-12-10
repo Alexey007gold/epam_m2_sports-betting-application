@@ -1,3 +1,5 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<spring:url value="/resources/css/bootstrap.min.css"/>">
+    <link rel="stylesheet" href="<spring:url value="/resources/css/style.css"/>">
     <title>SportsBet - Main</title>
 </head>
 <body>
@@ -49,6 +51,6 @@
     </div>
 </div>
 
-<script src="js/bootstrap.min.js"></script>
+<script src="<spring:url value="resources/js/bootstrap.min.js"/>"></script>
 </body>
 </html>
