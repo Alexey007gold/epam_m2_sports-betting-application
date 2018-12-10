@@ -15,7 +15,7 @@ public class I18N {
             new ReloadableResourceBundleMessageSource();
         messageSource.setCacheSeconds(-1); //cache time in seconds was set to -1. This disables reloading and makes the message source cache messages forever (until the JVM restarts).
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
-        messageSource.setBasenames("messages/messages");
+        messageSource.setBasenames("classpath:messages/messages");
         return messageSource;
     }
 }
