@@ -7,6 +7,7 @@ import com.epam.training.sportsbetting.domain.user.Player;
 
 public class Wager {
 
+    private Integer id;
     private SportEvent event;
     private Player player;
     private OutcomeOdd outcomeOdd;
@@ -30,6 +31,14 @@ public class Wager {
         this.timestamp = timestamp;
         this.processed = processed;
         this.winner = winner;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public SportEvent getEvent() {
@@ -103,6 +112,11 @@ public class Wager {
 
         public Builder() {
             this.wager = new Wager();
+        }
+
+        public Builder withId(Integer id) {
+            wager.id = id;
+            return this;
         }
 
         public Builder withSportEvent(SportEvent sportEvent) {

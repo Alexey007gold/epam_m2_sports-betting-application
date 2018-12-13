@@ -1,13 +1,23 @@
 package com.epam.training.sportsbetting.domain.user;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class Player extends User {
 
+    @NotNull
+    @Size(min = 3)
     private String name;
+    @NotNull
+    @Size(min = 3)
     private String accountNumber;
+    @PositiveOrZero
     private double balance;
+    @NotNull
     private Currency currency;
+    @NotNull
     private LocalDate birthDate;
 
     private Player() {
@@ -38,16 +48,32 @@ public class Player extends User {
         return balance;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
     public Currency getCurrency() {
         return currency;
     }
 
     public LocalDate getBirthDate() {
         return birthDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     public static class Builder extends User.Builder<Builder> {

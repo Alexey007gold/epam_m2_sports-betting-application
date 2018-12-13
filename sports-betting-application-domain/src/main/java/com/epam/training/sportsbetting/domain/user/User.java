@@ -1,9 +1,14 @@
 package com.epam.training.sportsbetting.domain.user;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Arrays;
 
 public class User {
 
+    @NotNull
+    @Positive
+    private Integer id;
     private String email;
     private char[] password;
     private boolean enabled;
@@ -17,12 +22,22 @@ public class User {
         this.enabled = enabled;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public char[] getPassword() {
-        if (password == null) return null;
+        if (password == null) {
+            return null;
+        }
         return Arrays.copyOf(password, password.length);
     }
 
@@ -30,6 +45,17 @@ public class User {
         return enabled;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(char[] password) {
+        this.password = password;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public static class Builder<T extends Builder<T>> {
 
@@ -41,6 +67,11 @@ public class User {
 
         protected Builder(User user) {
             this.user = user;
+        }
+
+        public T withId(Integer id) {
+            user.id = id;
+            return self();
         }
 
         public T withEmail(String email) {
