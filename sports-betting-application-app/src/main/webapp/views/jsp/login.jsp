@@ -1,10 +1,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+
 <!doctype html>
-<html lang="en">
+<html lang="${cookie['lang'].value}">
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <meta http-equiv='Content-Type' charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -33,13 +36,13 @@
                 <div>
                     <p class="bg-primary p-2 text-light font-weight-bold">Login</p>
                     <div class="m-2">
-                        <form>
+                        <form action="<c:url value="/perform_login"/>" method="post">
                             <label>
-                                <input class="border rounded p-1" type="text" placeholder="Email">
+                                <input class="border rounded p-1" type="text" name="username" placeholder="Email">
                             </label>
                             <br>
                             <label>
-                                <input class="border rounded p-1" type="password" placeholder="Password">
+                                <input class="border rounded p-1" type="password" name="password" placeholder="Password">
                             </label>
                             <br>
                             <input class="bg-primary border rounded text-light" type="submit" value="Login">

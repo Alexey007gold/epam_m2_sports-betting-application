@@ -1,13 +1,13 @@
 package com.epam.training.sportsbetting.domain.user;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Arrays;
 
 public class User {
 
     @NotNull
-    @Positive
+    @PositiveOrZero
     private Integer id;
     private String email;
     private char[] password;

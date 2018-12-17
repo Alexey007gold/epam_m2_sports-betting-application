@@ -1,5 +1,6 @@
 package com.epam.training.sportsbetting.controller;
 
+import com.epam.training.sportsbetting.ExtendedUserDetails;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.user.Currency;
@@ -8,6 +9,7 @@ import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.service.DataService;
 import com.epam.training.sportsbetting.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -89,19 +91,21 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-    public ModelAndView home() {
-        Optional<Player> player = playerService.getPlayerById(1);
+    public ModelAndView home(Authentication authentication) {
+        Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
+        Optional<Player> player = playerService.getPlayerById(userId);
 
         return getModelAndView(player
             .orElseThrow(() -> new IllegalStateException("Player was not found")));
     }
 
     @PostMapping("/updateAccount")
-    public ModelAndView updateAccount(@ModelAttribute @Valid Player player) {
-        Optional<Player> result = playerService.updatePlayerById(player);
+    public ModelAndView updateAccount(Authentication authentication, @ModelAttribute @Valid Player player) {
+        Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
+        player.setId(userId);
+        Player result = playerService.updatePlayerById(player);
 
-        return getModelAndView(result
-            .orElseThrow(() -> new IllegalStateException("Player does not exist")));
+        return getModelAndView(result);
     }
 
     @DeleteMapping("/removeWager")

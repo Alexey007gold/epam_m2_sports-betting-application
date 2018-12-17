@@ -38,14 +38,14 @@ public interface PlayerService {
      * @param player
      * @return
      */
-    Optional<Player> updatePlayerByEmail(Player player);
+    Player updatePlayerByEmail(Player player);
 
     /**
      * Updates the player data
      * @param player
      * @return
      */
-    Optional<Player> updatePlayerById(Player player);
+    Player updatePlayerById(Player player);
 
     /**
      * Decreases the balance of the given player by the given value
