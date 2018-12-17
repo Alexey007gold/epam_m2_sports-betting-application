@@ -73,14 +73,14 @@
         <tr>
             <th></th>
             <th>#</th>
-            <th>Event title</th>
-            <th>Event type</th>
-            <th>Bet type</th>
-            <th>Outcome value</th>
-            <th>Outcome odd</th>
-            <th>Wager amount</th>
-            <th>Winner</th>
-            <th>Processed</th>
+            <th><spring:message code="web.code.event.title"/></th>
+            <th><spring:message code="web.code.event.type"/></th>
+            <th><spring:message code="web.code.bet.type"/></th>
+            <th><spring:message code="web.code.outcome.value"/></th>
+            <th><spring:message code="web.code.outcome.odd"/></th>
+            <th><spring:message code="web.code.wager.amount"/></th>
+            <th><spring:message code="web.code.winner"/></th>
+            <th><spring:message code="web.code.processed"/></th>
         </tr>
         <c:forEach items="${wagers}" var="item" varStatus="loop">
             <tr wager_id="${item.id}">
