@@ -55,11 +55,25 @@ public interface PlayerService {
     void decreasePlayerBalance(Player player, double amount);
 
     /**
+     * Decreases the balance of the player by given id by the given value
+     * @param id
+     * @param amount
+     */
+    void decreaseBalanceByPlayerId(Integer id, double amount);
+
+    /**
      * Increases the balance of the given player by the given value
      * @param player
      * @param amount
      */
     void increasePlayerBalance(Player player, double amount);
+
+    /**
+     * Increases the balance of the player by given id by the given value
+     * @param id
+     * @param amount
+     */
+    void increaseBalanceByPlayerId(Integer id, double amount);
 
     /**
      * Checks whether a given player can make a wage of the given size

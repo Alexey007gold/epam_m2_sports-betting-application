@@ -4,10 +4,13 @@ import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public class Bet {
 
+    @PositiveOrZero
+    private Integer id;
     @JsonIgnore
     private SportEvent event;
     private String description;
@@ -22,6 +25,14 @@ public class Bet {
         this.description = description;
         this.outcomes = outcomes;
         this.betType = betType;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setEvent(SportEvent event) {

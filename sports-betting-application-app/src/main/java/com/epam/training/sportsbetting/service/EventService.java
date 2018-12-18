@@ -11,4 +11,6 @@ public interface EventService {
      * @param eventsToPlay
      */
     void playEvents(List<SportEvent> eventsToPlay);
+
+    List<SportEvent> getAllEvents();
 }

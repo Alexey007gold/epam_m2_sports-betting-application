@@ -1,5 +1,6 @@
 package com.epam.training.sportsbetting.service;
 
+import com.epam.training.sportsbetting.domain.bet.Bet;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
@@ -16,4 +17,6 @@ public interface BetService {
      * @return
      */
     Map<Player, Double> processBets(List<Wager> userBets, List<SportEvent> events);
+
+    List<Bet> getBetsByEventId(Integer eventId);
 }
