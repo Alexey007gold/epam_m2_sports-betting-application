@@ -22,6 +22,7 @@
 
     <script src="<spring:url value="/resources/js/jquery-3.3.1.min.js"/>"></script>
     <script src="<spring:url value="/resources/js/bootstrap.min.js"/>"></script>
+    <script type="text/javascript" src="<spring:url value="/resources/js/jquery.bootstrap-growl.min.js"/>"></script>
     <title>SportsBet - Events</title>
 </head>
 <body>
@@ -82,6 +83,7 @@
 
                 </select>
                 <input type="number" min="0.01" step="0.01" required id="wage_amount"> ${currency}<br>
+                <span id="modal-error" class="text-danger d-none">Some error has happened</span>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="web.code.cancel"/></button>
@@ -114,13 +116,29 @@
         if (amountInput.checkValidity()) {
             let outcomeId = modal.find("#modal_outcomes")[0].selectedOptions[0].value;
             $.ajax({
-                url: '/newWager?outcome_id=' + outcomeId + '&amount=' + amountInput.value,
+                url: '/newWager',
+                data: {'outcome_id' : outcomeId, 'amount': amountInput.value},
                 type: 'POST',
                 success: function(result) {
                     if (result === true) {
+                        amountInput.classList.remove('alert-danger');
+                        $('#modal-error').addClass('d-none');
                         modal.modal('hide');
+                        $.bootstrapGrowl('<spring:message code="web.code.wager.success"/>',{
+                            type: 'success',
+                            delay: 2000,
+                        });
                     }
+                },
+                error: function () {
+                    $('#modal-error').removeClass('d-none');
                 }
+            });
+        } else {
+            amountInput.classList.add('alert-danger');
+            $.bootstrapGrowl('<spring:message code="web.code.error.fill"/>',{
+                type: 'danger',
+                delay: 2000,
             });
         }
     }
