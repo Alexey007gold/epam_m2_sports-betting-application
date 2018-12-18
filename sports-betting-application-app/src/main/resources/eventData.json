@@ -1,11 +1,14 @@
 [ {
   "@type" : "Football",
+  "id" : 1,
   "title" : "Southampton v Bournemoth",
   "startDate" : "2019-10-27T19:00",
   "endDate" : "2019-10-27T21:00",
   "bets" : [ {
+    "id" : 1,
     "description" : "",
     "outcomes" : [ {
+      "id" : 1,
       "value" : "Southampton",
       "outcomeOdds" : [ {
         "value" : 4.0,
@@ -17,6 +20,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 2,
       "value" : "Bournemoth",
       "outcomeOdds" : [ {
         "value" : 1.7,
@@ -28,6 +32,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 3,
       "value" : "Draw",
       "outcomeOdds" : [ {
         "value" : 3.0,
@@ -41,8 +46,10 @@
     } ],
     "betType" : "WINNER"
   }, {
+    "id" : 2,
     "description" : "",
     "outcomes" : [ {
+      "id" : 4,
       "value" : "0",
       "outcomeOdds" : [ {
         "value" : 1.75,
@@ -50,6 +57,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 5,
       "value" : "1",
       "outcomeOdds" : [ {
         "value" : 1.25,
@@ -57,6 +65,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 6,
       "value" : ">=2",
       "outcomeOdds" : [ {
         "value" : 1.05,
@@ -66,8 +75,10 @@
     } ],
     "betType" : "GOAL"
   }, {
+    "id" : 3,
     "description" : "scores of Victor Wanyama",
     "outcomes" : [ {
+      "id" : 7,
       "value" : "0",
       "outcomeOdds" : [ {
         "value" : 1.05,
@@ -75,6 +86,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 8,
       "value" : "1",
       "outcomeOdds" : [ {
         "value" : 1.8,
@@ -82,6 +94,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 9,
       "value" : "2",
       "outcomeOdds" : [ {
         "value" : 3.15,
@@ -94,12 +107,15 @@
   "result" : null
 }, {
   "@type" : "Tennis",
+  "id" : 2,
   "title" : "Rafael Nadal vs. Alexander Zverev, Indian Wells 4th Round",
   "startDate" : "2019-10-10T19:00",
   "endDate" : "2019-10-10T22:00",
   "bets" : [ {
+    "id" : 4,
     "description" : "",
     "outcomes" : [ {
+      "id" : 10,
       "value" : "Rafael Nadal",
       "outcomeOdds" : [ {
         "value" : 1.01,
@@ -107,6 +123,7 @@
         "validTo" : null
       } ]
     }, {
+      "id" : 11,
       "value" : "Alexander Zverev",
       "outcomeOdds" : [ {
         "value" : 1.7,

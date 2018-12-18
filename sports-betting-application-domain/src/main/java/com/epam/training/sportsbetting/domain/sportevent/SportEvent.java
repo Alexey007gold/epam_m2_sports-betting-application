@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +22,10 @@ import java.util.Objects;
 )
 public abstract class SportEvent {
 
+    @PositiveOrZero
+    private Integer id;
+    @NotNull
+    @Size(min = 3)
     private String title;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -37,6 +44,10 @@ public abstract class SportEvent {
         this.startDate = startDate;
         this.endDate = endDate;
         this.bets = bets;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -61,6 +72,10 @@ public abstract class SportEvent {
 
     public void setResult(Result result) {
         this.result = result;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {

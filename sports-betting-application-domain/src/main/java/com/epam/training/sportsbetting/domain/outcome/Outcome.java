@@ -2,11 +2,14 @@ package com.epam.training.sportsbetting.domain.outcome;
 
 import com.epam.training.sportsbetting.domain.bet.Bet;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Outcome {
 
+    @PositiveOrZero
+    private Integer id;
     private String value;
     private List<OutcomeOdd> outcomeOdds;
     private Bet bet;
@@ -21,6 +24,14 @@ public class Outcome {
     public Outcome(String value, List<OutcomeOdd> outcomeOdds) {
         this.value = value;
         this.outcomeOdds = outcomeOdds;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setValue(String value) {

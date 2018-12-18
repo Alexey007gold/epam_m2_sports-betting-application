@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * Logs the following information of the application’s service methods
  * Parameter(s) passed to the called method
@@ -47,9 +49,9 @@ public class ServiceMethodsLogger {
             .append("\n");
         builder.append("\tArgs:\n");
         for (Object arg : args) {
-            builder.append("\t\tType: ").append(arg.getClass())
+            builder.append("\t\tType: ").append(Optional.ofNullable(arg).map(a -> a.getClass().toString()).orElse("?"))
                 .append("\t\tValue: ")
-                .append(arg.toString())
+                .append(Optional.ofNullable(arg).map(Object::toString).orElse("null"))
                 .append("\n");
         }
 

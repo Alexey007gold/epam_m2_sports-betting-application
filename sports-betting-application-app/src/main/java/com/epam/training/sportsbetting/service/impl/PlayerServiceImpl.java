@@ -63,8 +63,18 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public void decreaseBalanceByPlayerId(Integer id, double amount) {
+        decreasePlayerBalance(getPlayerById(id).orElseThrow(IllegalArgumentException::new), amount);
+    }
+
+    @Override
     public void increasePlayerBalance(Player player, double amount) {
         player.setBalance(player.getBalance() + amount);
+    }
+
+    @Override
+    public void increaseBalanceByPlayerId(Integer id, double amount) {
+        increasePlayerBalance(getPlayerById(id).orElseThrow(IllegalArgumentException::new), amount);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.epam.training.sportsbetting.service.impl;
 
+import com.epam.training.sportsbetting.domain.bet.Bet;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.service.BetService;
+import com.epam.training.sportsbetting.service.DataService;
 import com.epam.training.sportsbetting.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,12 @@ import static java.util.stream.Collectors.toMap;
 public class BetServiceImpl implements BetService {
 
     private final PlayerService playerService;
+    private final DataService dataService;
 
     @Autowired
-    public BetServiceImpl(PlayerService playerService) {
+    public BetServiceImpl(PlayerService playerService, DataService dataService) {
         this.playerService = playerService;
+        this.dataService = dataService;
     }
 
     @Override
@@ -53,5 +57,15 @@ public class BetServiceImpl implements BetService {
         playerToPrize.forEach(playerService::increasePlayerBalance);
 
         return playerToPrize;
+    }
+
+    @Override
+    public List<Bet> getBetsByEventId(Integer eventId) {
+        for (SportEvent event : dataService.getEvents()) {
+            if (event.getId().equals(eventId)) {
+                return event.getBets();
+            }
+        }
+        return Collections.emptyList();
     }
 }

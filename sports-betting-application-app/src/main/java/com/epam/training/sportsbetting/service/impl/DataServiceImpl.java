@@ -4,16 +4,19 @@ import com.epam.training.sportsbetting.domain.bet.Bet;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.outcome.OutcomeOdd;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
+import com.epam.training.sportsbetting.domain.user.Player;
+import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.service.DataService;
+import com.epam.training.sportsbetting.service.PlayerService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,6 +26,18 @@ public class DataServiceImpl implements DataService {
     private List<SportEvent> events;
     private List<Bet> availableBets;
     private List<Outcome> possibleOutcomes;
+
+    //temporary stab with data for home page
+    private Map<Integer, List<Wager>> wagerMap;
+    private int lastWagerId;
+
+    //temporary stab for initializing data for home page
+    private final PlayerService playerService;
+
+    @Autowired
+    public DataServiceImpl(PlayerService playerService) {
+        this.playerService = playerService;
+    }
 
     @PostConstruct
     private void initEventData() throws IOException {
@@ -69,6 +84,57 @@ public class DataServiceImpl implements DataService {
                 }
             }
         }
+
+
+
+
+        //temporary stab for initializing data for home page
+        Optional<Player> player = playerService.getPlayerById(1);
+
+        wagerMap = new HashMap<>();
+        List<Wager> wagers = new ArrayList<>();
+        wagers.add(new Wager.Builder()
+            .withId(lastWagerId++)
+            .withEvent(events.get(0))
+            .withPlayer(player.get())
+            .withOutcomeOdd(possibleOutcomes.get(0).getActiveOdd())
+            .withAmount(10000)
+            .withCurrency(player.get().getCurrency())
+            .withTimestamp(System.currentTimeMillis())
+            .build());
+        wagers.add(new Wager.Builder()
+            .withId(lastWagerId++)
+            .withEvent(events.get(0))
+            .withPlayer(player.get())
+            .withOutcomeOdd(possibleOutcomes.get(1).getActiveOdd())
+            .withAmount(8000)
+            .withCurrency(player.get().getCurrency())
+            .withTimestamp(System.currentTimeMillis())
+            .withWinner(true)
+            .withProcessed(true)
+            .build());
+        wagers.add(new Wager.Builder()
+            .withId(lastWagerId++)
+            .withEvent(events.get(0))
+            .withPlayer(player.get())
+            .withOutcomeOdd(possibleOutcomes.get(2).getActiveOdd())
+            .withAmount(5000)
+            .withCurrency(player.get().getCurrency())
+            .withTimestamp(System.currentTimeMillis())
+            .withWinner(false)
+            .withProcessed(true)
+            .build());
+        wagers.add(new Wager.Builder()
+            .withId(lastWagerId++)
+            .withEvent(events.get(1))
+            .withPlayer(player.get())
+            .withOutcomeOdd(possibleOutcomes.get(1).getActiveOdd())
+            .withAmount(12000)
+            .withCurrency(player.get().getCurrency())
+            .withTimestamp(System.currentTimeMillis())
+            .build());
+        wagerMap.put(player.get().getId(), wagers);
+        //
     }
 
     @Override
@@ -84,5 +150,19 @@ public class DataServiceImpl implements DataService {
     @Override
     public List<Outcome> getPossibleOutcomes() {
         return possibleOutcomes;
+    }
+
+    @Override
+    public List<Wager> getWagersByPlayerId(Integer id) {
+        return wagerMap.get(id);
+    }
+
+    @Override
+    public List<Wager> addWagerByPlayerId(Integer id, Wager wager) {
+        wager.setId(lastWagerId++);
+        return wagerMap.merge(id, new ArrayList<>(Collections.singletonList(wager)), (wagers, wagers2) -> {
+            wagers.add(wagers2.get(0));
+            return wagers;
+        });
     }
 }

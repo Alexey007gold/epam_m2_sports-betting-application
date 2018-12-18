@@ -17,13 +17,18 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="<spring:url value="/resources/css/bootstrap.min.css"/>">
     <link rel="stylesheet" href="<spring:url value="/resources/css/style.css"/>">
+
+    <script src="<spring:url value="/resources/js/jquery-3.3.1.min.js"/>"></script>
+    <script src="<spring:url value="/resources/js/bootstrap.min.js"/>"></script>
     <title>SportsBet - Home</title>
 </head>
 <body>
 
+<jsp:include page="navbar.jsp" />
+
 <div class="container border border-primary rounded mt-2">
     <div class="row bg-primary">
-        <h6 class="text-center text-light font-weight-normal p-2"><spring:message code="web.code.details"/></h6>
+        <h6 class="text-center text-light font-weight-normal p-2 pl-4"><spring:message code="web.code.details"/></h6>
     </div>
     <form id="player" class="mt-3" action="<c:url value="/updateAccount"/>" method="post">
         <div class="input-group">
@@ -58,7 +63,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text"><spring:message code="web.code.balance"/></span>
             </div>
-            <input class="form-control" type="number" step="0.01" min="0" required="required" name="balance" value="${user.balance}">
+            <input class="form-control" type="number" step="0.01" min="0" required="required" name="balance" val=${user.balance}>
         </div>
         <input class="form-control d-none" type="number" name="id" value="${user.id}">
         <input class="bg-primary border border-primary rounded mt-2 mb-2 text-light" type="submit" value="<spring:message code="web.code.save"/>">
@@ -67,7 +72,7 @@
 
 <div class="container border border-primary rounded mt-2">
     <div class="row bg-primary">
-        <h6 class="text-center text-light font-weight-normal p-2"><spring:message code="web.code.wagers"/></h6>
+        <h6 class="text-center text-light font-weight-normal p-2 pl-4"><spring:message code="web.code.wagers"/></h6>
     </div>
     <table class="w-100">
         <tr>
@@ -84,14 +89,14 @@
         </tr>
         <c:forEach items="${wagers}" var="item" varStatus="loop">
             <tr wager_id="${item.id}">
-                <td><input class="border border-primary rounded bg-primary text-light <c:out escapeXml="false" value="${item.processed ? '' : 'd-none'}"/>" type="button" value="<spring:message code="web.code.remove"/>" onclick="removeWager(this.parentNode.parentNode)"></td>
+                <td><input class="border border-primary rounded bg-primary text-light <c:out escapeXml="false" value="${item.processed ? 'd-none' : ''}"/>" type="button" value="<spring:message code="web.code.remove"/>" onclick="removeWager(this.parentNode.parentNode)"></td>
                 <td>${loop.index + 1}</td>
                 <td>${item.event.title}</td>
                 <td>${item.event['class'].simpleName}</td>
                 <td>${item.outcomeOdd.outcome.bet.betType}</td>
                 <td>${item.outcomeOdd.outcome.value}</td>
                 <td class="odd" val="${item.outcomeOdd.value}"></td>
-                <td>${item.amount} ${item.currency}</td>
+                <td amount="${item.amount}">${item.amount} ${item.currency}</td>
                 <c:if test="${item.processed}">
                     <c:if test="${item.winner}">
                         <td><spring:message code="web.code.yes"/></td>
@@ -109,16 +114,17 @@
         </c:forEach>
     </table>
 </div>
-
-<script src="<spring:url value="/resources/js/bootstrap.min.js"/>"></script>
-<script src="<spring:url value="/resources/js/jquery-3.3.1.min.js"/>"></script>
 <script>
     function removeWager(row) {
         $.ajax({
-            url: '/removeWager?wager_id=' + row.getAttribute("wager_id") + '&player_id=' + document.getElementById("player").querySelectorAll("input[name=id]")[0].value,
+            url: '/removeWager?wager_id=' + row.getAttribute("wager_id"),
             type: 'DELETE',
             success: function(result) {
                 if (result === true) {
+                    let balanceField = document.getElementById("player").querySelectorAll("input[name=balance]")[0];
+                    let value = parseFloat(balanceField.value);
+                    let wagerAmount = parseFloat(row.children[7].getAttribute("amount"));
+                    balanceField.value = (value + (wagerAmount * 0.75)).toFixed(2);
                     row.remove();
                 }
             }
@@ -154,10 +160,15 @@
     }
 
     $(document).ready(function() {
+        //compute odd proportions
         let oddElems = document.querySelectorAll(".odd");
         for (let i = 0; i < oddElems.length; i++) {
             oddElems[i].innerText = doubleToProportion(oddElems[i].getAttribute("val"));
         }
+
+        //round balance to two decimal points
+        let balanceField = document.getElementById("player").querySelectorAll("input[name=balance]")[0];
+        balanceField.value = parseFloat(balanceField.getAttribute("val")).toFixed(2);
     })
 </script>
 </body>
