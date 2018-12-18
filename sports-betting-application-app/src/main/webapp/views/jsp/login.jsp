@@ -37,6 +37,9 @@
                     <p class="bg-primary p-2 text-light font-weight-bold">Login</p>
                     <div class="m-2">
                         <form action="<c:url value="/perform_login"/>" method="post">
+                            <c:if test="${param.logout != null}">
+                                <span class="text-success">You have been logged out.</span><br>
+                            </c:if>
                             <label>
                                 <input class="border rounded p-1" type="text" name="username" placeholder="Email">
                             </label>
@@ -45,6 +48,10 @@
                                 <input class="border rounded p-1" type="password" name="password" placeholder="Password">
                             </label>
                             <br>
+
+                            <c:if test="${param.error}">
+                                <span class="text-danger">Invalid username and password.</span><br>
+                            </c:if>
                             <input class="bg-primary border rounded text-light" type="submit" value="Login">
                         </form>
                     </div>
