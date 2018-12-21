@@ -37,31 +37,25 @@ public class UserServiceImpl implements UserService, InitializingBean {
     public UserServiceImpl(PasswordEncoder passwordEncoder, ModelMapper mapper) {
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
+        this.userMap = new HashMap<>();
     }
 
-    @PostConstruct
-    public void init() {
-        userList = new ArrayList<>();
-        userList.add(new Player.Builder()
-            .withId(0)
-            .withEmail("arnold@gmail.com")
-            .withPassword(passwordEncoder.encode("1234").toCharArray())
-            .withAccountNumber("1234")
-            .withBalance(1000)
-            .withCurrency(Currency.EUR)
-            .withName("Arnold Schwarzenegger")
-            .withBirthDate(LocalDate.of(1941, 1, 2))
-            .build());
-        userList.add(new Player.Builder()
-            .withId(1)
-            .withEmail("john@gmail.com")
-            .withPassword(passwordEncoder.encode("1234").toCharArray())
-            .withAccountNumber("12345")
-            .withBalance(10500)
-            .withCurrency(Currency.EUR)
-            .withName("John Doe")
-            .withBirthDate(LocalDate.of(1945, 10, 21))
-            .build());
+    public void loadUsers() throws URISyntaxException, IOException {
+        List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("users.tsv").toURI()));
+
+        for (String line : lines) {
+            String[] values = line.split("\t");
+            userMap.put(userId.incrementAndGet(), new Player.Builder()
+                .withId(userId.get())
+                .withEmail(values[0])
+                .withPassword(passwordEncoder.encode(values[1]).toCharArray())
+                .withAccountNumber(values[2])
+                .withBalance(Double.parseDouble(values[3]))
+                .withCurrency(Currency.valueOf(values[4]))
+                .withName(values[5])
+                .withBirthDate(LocalDate.parse(values[6]))
+                .build());
+        }
     }
 
     @Override
@@ -96,6 +90,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
     @Override
     public void afterPropertiesSet() throws IOException, URISyntaxException {
         //PostConstruct alternative for java 9+
-        init();
+        loadUsers();
     }
 }
