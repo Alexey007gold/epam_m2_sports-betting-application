@@ -3,27 +3,40 @@ package com.epam.training.sportsbetting.service.impl;
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.user.User;
+import com.epam.training.sportsbetting.form.UpdateUserForm;
 import com.epam.training.sportsbetting.service.UserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, InitializingBean {
 
-    private List<User> userList;
+    private Map<Integer, User> userMap;
 
     private PasswordEncoder passwordEncoder;
 
+    private ModelMapper mapper;
+
+    private AtomicInteger userId = new AtomicInteger();
+
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, ModelMapper mapper) {
         this.passwordEncoder = passwordEncoder;
+        this.mapper = mapper;
     }
 
     @PostConstruct
@@ -54,38 +67,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         if (user.getId() == null) {
-            user.setId(userList.size());
+            user.setId(userId.incrementAndGet());
         }
-        userList.add(user.getId(), user);
+        userMap.put(user.getId(), user);
         return user;
     }
 
     @Override
     public Optional<User> getUserById(Integer id) {
-        if (userList.size() >= id) {
-            return Optional.ofNullable(userList.get(id));
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(userMap.get(id));
     }
 
     @Override
     public Optional<User> getUserByEmail(String email) {
-        for (User user : userList) {
-            if (user.getEmail().equalsIgnoreCase(email)) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
+        return userMap.values().stream().filter(u -> u.getEmail().equalsIgnoreCase(email)).findFirst();
     }
 
     @Override
-    public User updateUserById(User user) {
-        if (userList.size() >= user.getId()) {
-            userList.set(user.getId(), user);
-            return user;
-        } else {
-            throw new IllegalStateException(String.format("User with id %d not found", user.getId()));
+    public User updateUserById(Integer id, UpdateUserForm form) {
+        User user = userMap.get(id);
+        if (user == null) {
+            throw new IllegalStateException(String.format("User with id %d not found", id));
         }
+        mapper.map(form, user);
+        return user;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws IOException, URISyntaxException {
+        //PostConstruct alternative for java 9+
+        init();
     }
 }

@@ -1,7 +1,9 @@
 package com.epam.training.sportsbetting.config;
 
-import com.epam.training.sportsbetting.converter.StringToCurrencyConverter;
-import com.epam.training.sportsbetting.converter.StringToLocalDateConverter;
+import com.epam.training.sportsbetting.converter.modelmapper.MMStringToLocalDateConverter;
+import com.epam.training.sportsbetting.converter.spring.StringToCurrencyConverter;
+import com.epam.training.sportsbetting.converter.spring.StringToLocalDateConverter;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -73,5 +75,12 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.addConverter(new MMStringToLocalDateConverter());
+        return mapper;
     }
 }

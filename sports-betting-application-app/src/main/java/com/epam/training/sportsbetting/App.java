@@ -248,7 +248,7 @@ public class App {
                     df.format(wagerService.calculatePrize(wager))));
         }
         if (player == null && prize > 0) {
-            throw new IllegalStateException(i18N.getMessage("code.prize.nonpozitive"));
+            throw new IllegalStateException(i18N.getMessage("code.prize.nonpositive"));
         }
 
         if (prize > 0) {

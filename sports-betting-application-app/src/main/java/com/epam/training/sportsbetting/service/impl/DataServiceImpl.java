@@ -10,10 +10,10 @@ import com.epam.training.sportsbetting.service.DataService;
 import com.epam.training.sportsbetting.service.PlayerService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -21,7 +21,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 
 @Service
-public class DataServiceImpl implements DataService {
+public class DataServiceImpl implements DataService, InitializingBean {
 
     private List<SportEvent> events;
     private List<Bet> availableBets;
@@ -39,7 +39,6 @@ public class DataServiceImpl implements DataService {
         this.playerService = playerService;
     }
 
-    @PostConstruct
     private void initEventData() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -164,5 +163,11 @@ public class DataServiceImpl implements DataService {
             wagers.add(wagers2.get(0));
             return wagers;
         });
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        //PostConstruct alternative for java 9+
+        initEventData();
     }
 }

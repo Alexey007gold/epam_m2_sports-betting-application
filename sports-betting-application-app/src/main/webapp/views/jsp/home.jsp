@@ -5,53 +5,72 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!doctype html>
-<fmt:setLocale value="${cookie['lang'].value}" />
+<fmt:setLocale value="${cookie['localeInfo'].value}" />
 <fmt:requestEncoding value="utf-8" />
 <fmt:setBundle basename="messages/messages" />
-<html lang="${cookie['lang'].value}">
+<html lang="${cookie['localeInfo'].value}">
 <head>
     <!-- Required meta tags -->
     <meta http-equiv='Content-Type' charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="<spring:url value="/resources/css/bootstrap.min.css"/>">
-    <link rel="stylesheet" href="<spring:url value="/resources/css/style.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/style.css"/>">
 
-    <script src="<spring:url value="/resources/js/jquery-3.3.1.min.js"/>"></script>
-    <script src="<spring:url value="/resources/js/bootstrap.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/jquery-3.3.1.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
     <title>SportsBet - Home</title>
 </head>
 <body>
 
-<jsp:include page="navbar.jsp" />
+<div class="container border border-primary rounded mt-2 p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/home"/>"><fmt:message key="web.code.menu.home"/></a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/events"/>"><fmt:message key="web.code.menu.events"/></a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" data-toggle="dropdown" href="#">
+                        <fmt:message key="web.code.menu.language"/>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="?lang=en"><fmt:message key="web.code.english"/></a>
+                        <a class="dropdown-item" href="?lang=ru"><fmt:message key="web.code.russian"/></a>
+                    </div>
+                </li>
+                <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/perform_logout"/>"><fmt:message key="web.code.menu.logout"/></a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
 
 <div class="container border border-primary rounded mt-2">
     <div class="row bg-primary">
-        <h6 class="text-center text-light font-weight-normal p-2 pl-4"><spring:message code="web.code.details"/></h6>
+        <h6 class="text-center text-light font-weight-normal p-2 pl-4"><fmt:message key="web.code.details"/></h6>
     </div>
     <form id="player" class="mt-3" action="<c:url value="/updateAccount"/>" method="post">
         <div class="input-group">
             <div class="input-group-prepend">
-                <span class="input-group-text"><spring:message code="web.code.name"/></span>
+                <span class="input-group-text"><fmt:message key="web.code.name"/></span>
             </div>
             <input class="form-control" type="text" minlength="3" required="required" name="name" value="${user.name}">
         </div>
         <div class="input-group mt-2">
             <div class="input-group-prepend">
-                <span class="input-group-text"><spring:message code="web.code.birth"/></span>
+                <span class="input-group-text"><fmt:message key="web.code.birth"/></span>
             </div>
             <input class="form-control" type="date" required="required" name="birthDate" value="${user.birthDate.toString()}">
         </div>
         <div class="input-group mt-2">
             <div class="input-group-prepend">
-                <span class="input-group-text"><spring:message code="web.code.account"/></span>
+                <span class="input-group-text"><fmt:message key="web.code.account"/></span>
             </div>
             <input class="form-control" type="text" minlength="3" required="required" name="accountNumber" value="${user.accountNumber}">
         </div>
         <div class="input-group mt-2">
             <div class="input-group-prepend">
-                <span class="input-group-text"><spring:message code="web.code.currency"/></span>
+                <span class="input-group-text"><fmt:message key="web.code.currency"/></span>
             </div>
             <select class="form-control" name="currency">
                 <c:forEach items="${currencyOptions}" varStatus="loop">
@@ -61,35 +80,34 @@
         </div>
         <div class="input-group mt-2">
             <div class="input-group-prepend">
-                <span class="input-group-text"><spring:message code="web.code.balance"/></span>
+                <span class="input-group-text"><fmt:message key="web.code.balance"/></span>
             </div>
             <input class="form-control" type="number" step="0.01" min="0" required="required" name="balance" val=${user.balance}>
         </div>
-        <input class="form-control d-none" type="number" name="id" value="${user.id}">
-        <input class="bg-primary border border-primary rounded mt-2 mb-2 text-light" type="submit" value="<spring:message code="web.code.save"/>">
+        <input class="bg-primary border border-primary rounded mt-2 mb-2 text-light" type="submit" value="<fmt:message key="web.code.save"/>">
     </form>
 </div>
 
 <div class="container border border-primary rounded mt-2">
     <div class="row bg-primary">
-        <h6 class="text-center text-light font-weight-normal p-2 pl-4"><spring:message code="web.code.wagers"/></h6>
+        <h6 class="text-center text-light font-weight-normal p-2 pl-4"><fmt:message key="web.code.wagers"/></h6>
     </div>
     <table class="w-100">
         <tr>
             <th></th>
             <th>#</th>
-            <th><spring:message code="web.code.event.title"/></th>
-            <th><spring:message code="web.code.event.type"/></th>
-            <th><spring:message code="web.code.bet.type"/></th>
-            <th><spring:message code="web.code.outcome.value"/></th>
-            <th><spring:message code="web.code.outcome.odd"/></th>
-            <th><spring:message code="web.code.wager.amount"/></th>
-            <th><spring:message code="web.code.winner"/></th>
-            <th><spring:message code="web.code.processed"/></th>
+            <th><fmt:message key="web.code.event.title"/></th>
+            <th><fmt:message key="web.code.event.type"/></th>
+            <th><fmt:message key="web.code.bet.type"/></th>
+            <th><fmt:message key="web.code.outcome.value"/></th>
+            <th><fmt:message key="web.code.outcome.odd"/></th>
+            <th><fmt:message key="web.code.wager.amount"/></th>
+            <th><fmt:message key="web.code.winner"/></th>
+            <th><fmt:message key="web.code.processed"/></th>
         </tr>
         <c:forEach items="${wagers}" var="item" varStatus="loop">
             <tr wager_id="${item.id}">
-                <td><input class="border border-primary rounded bg-primary text-light <c:out escapeXml="false" value="${item.processed ? 'd-none' : ''}"/>" type="button" value="<spring:message code="web.code.remove"/>" onclick="removeWager(this.parentNode.parentNode)"></td>
+                <td><input class="border border-primary rounded bg-primary text-light <c:out escapeXml="false" value="${item.processed ? 'd-none' : ''}"/>" type="button" value="<fmt:message key="web.code.remove"/>" onclick="removeWager(this.parentNode.parentNode)"></td>
                 <td>${loop.index + 1}</td>
                 <td>${item.event.title}</td>
                 <td>${item.event['class'].simpleName}</td>
@@ -99,16 +117,16 @@
                 <td amount="${item.amount}">${item.amount} ${item.currency}</td>
                 <c:if test="${item.processed}">
                     <c:if test="${item.winner}">
-                        <td><spring:message code="web.code.yes"/></td>
+                        <td><fmt:message key="web.code.yes"/></td>
                     </c:if>
                     <c:if test="${!item.winner}">
-                        <td><spring:message code="web.code.no"/></td>
+                        <td><fmt:message key="web.code.no"/></td>
                     </c:if>
-                    <td><spring:message code="web.code.yes"/></td>
+                    <td><fmt:message key="web.code.yes"/></td>
                 </c:if>
                 <c:if test="${!item.processed}">
                     <td>-</td>
-                    <td><spring:message code="web.code.no"/></td>
+                    <td><fmt:message key="web.code.no"/></td>
                 </c:if>
             </tr>
         </c:forEach>
