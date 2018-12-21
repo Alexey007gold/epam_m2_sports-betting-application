@@ -12,8 +12,8 @@
                         <spring:message code="web.code.menu.language"/>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="?lang=en"><spring:message code="web.code.english"/></a>
-                        <a class="dropdown-item" href="?lang=ru"><spring:message code="web.code.russian"/></a>
+                        <a class="dropdown-item" href="<spring:url value="?lang=en"/>"><spring:message code="web.code.english"/></a>
+                        <a class="dropdown-item" href="<spring:url value="?lang=ru"/>"><spring:message code="web.code.russian"/></a>
                     </div>
                 </li>
                 <li class="nav-item"><a class="nav-link text-light" href="<spring:url value="/perform_logout"/>"><spring:message code="web.code.menu.logout"/></a></li>

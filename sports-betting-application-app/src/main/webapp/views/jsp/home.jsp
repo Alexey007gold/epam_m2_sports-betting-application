@@ -1,4 +1,3 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -35,8 +34,8 @@
                         <fmt:message key="web.code.menu.language"/>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="?lang=en"><fmt:message key="web.code.english"/></a>
-                        <a class="dropdown-item" href="?lang=ru"><fmt:message key="web.code.russian"/></a>
+                        <a class="dropdown-item" href="<c:url value="?lang=en"/>"><fmt:message key="web.code.english"/></a>
+                        <a class="dropdown-item" href="<c:url value="?lang=ru"/>"><fmt:message key="web.code.russian"/></a>
                     </div>
                 </li>
                 <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/perform_logout"/>"><fmt:message key="web.code.menu.logout"/></a></li>
@@ -135,7 +134,7 @@
 <script>
     function removeWager(row) {
         $.ajax({
-            url: '/removeWager?wager_id=' + row.getAttribute("wager_id"),
+            url: '<c:url value="/removeWager?wager_id="/>' + row.getAttribute("wager_id"),
             type: 'DELETE',
             success: function(result) {
                 if (result === true) {

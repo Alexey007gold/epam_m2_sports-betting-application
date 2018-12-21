@@ -116,7 +116,7 @@
         if (amountInput.checkValidity()) {
             let outcomeId = modal.find("#modal_outcomes")[0].selectedOptions[0].value;
             $.ajax({
-                url: '/newWager',
+                url: '<c:url value="/newWager"/>',
                 data: {'outcome_id' : outcomeId, 'amount': amountInput.value},
                 type: 'POST',
                 success: function(result) {
