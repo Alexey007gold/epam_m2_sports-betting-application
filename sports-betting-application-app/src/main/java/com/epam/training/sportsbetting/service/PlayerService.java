@@ -2,6 +2,7 @@ package com.epam.training.sportsbetting.service;
 
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
+import com.epam.training.sportsbetting.form.UpdatePlayerForm;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -42,10 +43,10 @@ public interface PlayerService {
 
     /**
      * Updates the player data
-     * @param player
+     * @param form
      * @return
      */
-    Player updatePlayerById(Player player);
+    Player updatePlayerById(Integer id, UpdatePlayerForm form);
 
     /**
      * Decreases the balance of the given player by the given value

@@ -1,4 +1,4 @@
-package com.epam.training.sportsbetting.converter;
+package com.epam.training.sportsbetting.converter.spring;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

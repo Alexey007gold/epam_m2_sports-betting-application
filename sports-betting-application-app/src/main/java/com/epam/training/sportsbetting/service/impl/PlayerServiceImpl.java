@@ -2,6 +2,7 @@ package com.epam.training.sportsbetting.service.impl;
 
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
+import com.epam.training.sportsbetting.form.UpdatePlayerForm;
 import com.epam.training.sportsbetting.service.PlayerService;
 import com.epam.training.sportsbetting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,8 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player updatePlayerById(Player player) {
-        return (Player) userService.updateUserById(player);
+    public Player updatePlayerById(Integer id, UpdatePlayerForm form) {
+        return (Player) userService.updateUserById(id, form);
     }
 
     @Override
