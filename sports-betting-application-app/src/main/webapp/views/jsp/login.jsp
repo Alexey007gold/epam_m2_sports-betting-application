@@ -29,8 +29,8 @@
                         <spring:message code="web.code.menu.language"/>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="?lang=en"><spring:message code="web.code.english"/></a>
-                        <a class="dropdown-item" href="?lang=ru"><spring:message code="web.code.russian"/></a>
+                        <a class="dropdown-item" href="<spring:url value="?lang=en"/>"><spring:message code="web.code.english"/></a>
+                        <a class="dropdown-item" href="<spring:url value="?lang=ru"/>"><spring:message code="web.code.russian"/></a>
                     </div>
                 </li>
             </ul>

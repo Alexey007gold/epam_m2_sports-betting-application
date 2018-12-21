@@ -38,6 +38,15 @@ public class UpdateAccountServlet extends AbstractHomeServlet {
         passToHomePage(req, resp, result);
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Integer userId = ((ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Player player = playerService.getPlayerById(userId)
+                .orElseThrow(IllegalStateException::new);
+
+        passToHomePage(req, resp, player);
+    }
+
     private UpdatePlayerForm getUpdatePlayerForm(HttpServletRequest req) {
         Map<String, String> parameterMap = req.getParameterMap().entrySet().stream()
             .collect(toMap(Map.Entry::getKey, e -> toUTF8(e.getValue()[0])));

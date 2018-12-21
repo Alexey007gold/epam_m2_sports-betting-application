@@ -46,7 +46,7 @@
                 <td>${item['class'].simpleName}</td>
                 <td>${item.startDate}</td>
                 <td>${item.endDate}</td>
-                <td><input class="border border-primary rounded bg-primary text-light <c:out escapeXml="false" value="${item.result == null ? '' : 'd-none'}"/>" type="button" value="<spring:message code="web.code.bet.list"/>" onclick="window.location = '/bets?event_id=${item.id}'"></td>
+                <td><input class="border border-primary rounded bg-primary text-light <c:out escapeXml="false" value="${item.result == null ? '' : 'd-none'}"/>" type="button" value="<spring:message code="web.code.bet.list"/>" onclick="window.location = '<c:url value="/bets/${item.id}"/>'"></td>
             </tr>
         </c:forEach>
     </table>
