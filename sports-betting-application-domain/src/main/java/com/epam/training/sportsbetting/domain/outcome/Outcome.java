@@ -3,7 +3,6 @@ package com.epam.training.sportsbetting.domain.outcome;
 import com.epam.training.sportsbetting.domain.bet.Bet;
 
 import javax.validation.constraints.PositiveOrZero;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class Outcome {
@@ -48,21 +47,6 @@ public class Outcome {
 
     public void setOutcomeOdds(List<OutcomeOdd> outcomeOdds) {
         this.outcomeOdds = outcomeOdds;
-    }
-
-    public OutcomeOdd getActiveOdd() {
-        if (outcomeOdds == null) return null;
-
-        LocalDateTime now = LocalDateTime.now();
-        for (OutcomeOdd outcomeOdd : outcomeOdds) {
-            LocalDateTime validFrom = outcomeOdd.getValidFrom();
-            LocalDateTime validTo = outcomeOdd.getValidTo();
-            if ((validFrom.isBefore(now) || validFrom.isEqual(now)) &&
-                    (validTo.isAfter(now) || validFrom.isEqual(now))) {
-                return outcomeOdd;
-            }
-        }
-        return null;
     }
 
     public Bet getBet() {

@@ -1,6 +1,9 @@
 package com.epam.training.sportsbetting.config;
 
+import com.epam.training.sportsbetting.converter.modelmapper.LocalDateTimeToLongConverter;
+import com.epam.training.sportsbetting.converter.modelmapper.LongToLocalDateTimeConverter;
 import com.epam.training.sportsbetting.converter.modelmapper.MMStringToLocalDateConverter;
+import com.epam.training.sportsbetting.converter.modelmapper.SportEventConverter;
 import com.epam.training.sportsbetting.converter.spring.StringToCurrencyConverter;
 import com.epam.training.sportsbetting.converter.spring.StringToLocalDateConverter;
 import org.modelmapper.ModelMapper;
@@ -11,6 +14,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -24,6 +28,7 @@ import java.util.Locale;
 @Configuration
 @EnableAspectJAutoProxy
 @EnableWebMvc
+@EnableTransactionManagement
 @ComponentScan(basePackages = "com.epam.training.sportsbetting")
 public class AppConfig implements WebMvcConfigurer {
 
@@ -81,6 +86,9 @@ public class AppConfig implements WebMvcConfigurer {
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.addConverter(new MMStringToLocalDateConverter());
+        mapper.addConverter(new SportEventConverter());
+        mapper.addConverter(new LongToLocalDateTimeConverter());
+        mapper.addConverter(new LocalDateTimeToLongConverter());
         return mapper;
     }
 }

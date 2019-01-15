@@ -71,7 +71,7 @@ public class OutcomeOdd {
                 "value=" + outcome.getValue() +
                 ", outcomeOdds=" + getValue() +
                 " and valid from " + getValidFrom().format(dtf) +
-                " to " + getValidTo().format(dtf) +
+                " to " + (getValidTo() == null ? "null" : getValidTo().format(dtf)) +
                 ']';
     }
 }
