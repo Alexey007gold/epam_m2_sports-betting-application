@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20190103194300" author="Oleksii Kovetskyi">
+        <createTable tableName="hibernate_sequence">
+            <column name="next_val" type="BIGINT(20)"/>
+        </createTable>
+        <insert tableName="hibernate_sequence">
+            <column name="next_val" value="0"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

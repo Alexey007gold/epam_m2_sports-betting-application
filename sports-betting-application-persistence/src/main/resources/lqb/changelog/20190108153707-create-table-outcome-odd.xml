@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20190108153707" author="Oleksii Kovetskyi">
+        <createTable tableName="outcome_odd">
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="outcome_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_from" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_to" type="DATETIME"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_outcome_odd_outcome"
+                                 baseTableName="outcome_odd"
+                                 baseColumnNames="outcome_id"
+                                 referencedTableName="outcome"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>
