@@ -36,13 +36,15 @@ public interface PlayerService {
 
     /**
      * Updates the player data
-     * @param player
+     * @param email
+     * @param form
      * @return
      */
-    Player updatePlayerByEmail(Player player);
+    Player updatePlayerByEmail(String email, UpdatePlayerForm form);
 
     /**
      * Updates the player data
+     * @param id
      * @param form
      * @return
      */

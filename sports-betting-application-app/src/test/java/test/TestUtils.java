@@ -1,9 +1,6 @@
 package test;
 
-import com.epam.training.sportsbetting.service.DataService;
-import com.epam.training.sportsbetting.service.impl.DataServiceImpl;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -40,12 +37,5 @@ public class TestUtils {
         modifiersField.setInt(declaredField, declaredField.getModifiers() & ~Modifier.FINAL);
 
         declaredField.set(target, value);
-    }
-
-    public static DataService getNewDataServiceInstance() throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        Constructor<DataServiceImpl> declaredConstructor =
-                (Constructor<DataServiceImpl>) DataServiceImpl.class.getDeclaredConstructors()[0];
-        declaredConstructor.setAccessible(true);
-        return declaredConstructor.newInstance();
     }
 }

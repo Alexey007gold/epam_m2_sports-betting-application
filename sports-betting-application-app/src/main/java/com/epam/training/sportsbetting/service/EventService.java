@@ -13,4 +13,6 @@ public interface EventService {
     void playEvents(List<SportEvent> eventsToPlay);
 
     List<SportEvent> getAllEvents();
+
+    List<SportEvent> getFutureEvents();
 }

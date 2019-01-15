@@ -5,9 +5,10 @@ import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
+import com.epam.training.sportsbetting.repository.BetRepository;
 import com.epam.training.sportsbetting.service.BetService;
-import com.epam.training.sportsbetting.service.DataService;
 import com.epam.training.sportsbetting.service.PlayerService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,15 @@ import static java.util.stream.Collectors.toMap;
 public class BetServiceImpl implements BetService {
 
     private final PlayerService playerService;
-    private final DataService dataService;
+    private final BetRepository betRepository;
+
+    private final ModelMapper mapper;
 
     @Autowired
-    public BetServiceImpl(PlayerService playerService, DataService dataService) {
+    public BetServiceImpl(PlayerService playerService, BetRepository betRepository, ModelMapper mapper) {
         this.playerService = playerService;
-        this.dataService = dataService;
+        this.betRepository = betRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -61,11 +65,8 @@ public class BetServiceImpl implements BetService {
 
     @Override
     public List<Bet> getBetsByEventId(Integer eventId) {
-        for (SportEvent event : dataService.getEvents()) {
-            if (event.getId().equals(eventId)) {
-                return event.getBets();
-            }
-        }
-        return Collections.emptyList();
+        return betRepository.findByEventId(eventId).stream()
+            .map(e -> mapper.map(e, Bet.class))
+            .collect(Collectors.toList());
     }
 }

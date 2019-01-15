@@ -1,30 +1,50 @@
 package com.epam.training.sportsbetting.service.impl;
 
-import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
-import com.epam.training.sportsbetting.service.DataService;
+import com.epam.training.sportsbetting.entity.*;
+import com.epam.training.sportsbetting.enums.Currency;
+import com.epam.training.sportsbetting.repository.OutcomeRepository;
+import com.epam.training.sportsbetting.repository.SportEventRepository;
+import com.epam.training.sportsbetting.repository.WagerRepository;
 import com.epam.training.sportsbetting.service.OutcomeService;
 import com.epam.training.sportsbetting.service.PlayerService;
 import com.epam.training.sportsbetting.service.WagerService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class WagerServiceImpl implements WagerService {
 
-    private final DataService dataService;
     private final PlayerService playerService;
     private final OutcomeService outcomeService;
+    private final OutcomeRepository outcomeRepository;
+    private final WagerRepository wagerRepository;
+    private final SportEventRepository eventRepository;
+
+    private final ModelMapper mapper;
+
+    private final EntityManager entityManager;
 
     @Autowired
-    public WagerServiceImpl(DataService dataService, PlayerService playerService,
-                            OutcomeService outcomeService) {
-        this.dataService = dataService;
+    public WagerServiceImpl(PlayerService playerService, OutcomeService outcomeService,
+                            OutcomeRepository outcomeRepository, WagerRepository wagerRepository,
+                            SportEventRepository eventRepository, ModelMapper mapper, EntityManager entityManager) {
         this.playerService = playerService;
         this.outcomeService = outcomeService;
+        this.outcomeRepository = outcomeRepository;
+        this.wagerRepository = wagerRepository;
+        this.eventRepository = eventRepository;
+        this.mapper = mapper;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -33,44 +53,50 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
+    @Transactional
     public List<Wager> getWagersByPlayerId(Integer id) {
-        return dataService.getWagersByPlayerId(id);
+        return wagerRepository.findByPlayerId(id).stream()
+                .map((w) -> mapper.map(w, Wager.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Wager> getWagersByPlayerEmail(String email) {
-        throw new UnsupportedOperationException();
+        return wagerRepository.findByPlayerEmail(email).stream()
+                .map((w) -> mapper.map(w, Wager.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean newWager(Integer playerId, Integer outcomeId, Double amount) {
         Player player = playerService.getPlayerById(playerId).orElseThrow(IllegalArgumentException::new);
-        Outcome outcomeById = outcomeService.getOutcomeById(outcomeId);
-        dataService.addWagerByPlayerId(playerId, new Wager.Builder()
-            .withAmount(amount)
-            .withCurrency(player.getCurrency())
-            .withTimestamp(System.currentTimeMillis())
-            .withOutcomeOdd(outcomeById.getActiveOdd())
-            .withEvent(outcomeById.getBet().getEvent())
-            .withPlayer(player)
-            .build());
+        OutcomeEntity outcomeById = outcomeRepository.findById(outcomeId).orElseThrow();
+        SportEventEntity sportEventEntity = eventRepository.getByOutcomeId(outcomeId)
+                .orElseThrow(() -> new IllegalStateException("Not found event for the outcomeId"));
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (sportEventEntity.getStartDate().isBefore(currentTime))
+            throw new IllegalStateException("The event has already started");
+
+        wagerRepository.save(WagerEntity.builder()
+                .amount(amount)
+                .currency(Currency.valueOf(player.getCurrency().toString()))
+                .timestamp(currentTime)
+                .outcomeOdd(Objects.requireNonNull(outcomeService.getActiveOddEntity(outcomeById.getOutcomeOdds(), sportEventEntity.getStartDate())))
+                .event(entityManager.getReference(BetEntity.class, outcomeById.getBetId()).getEvent())
+                .player(entityManager.getReference(PlayerEntity.class, playerId))
+                .build());
         playerService.decreaseBalanceByPlayerId(playerId, amount);
         return true;
     }
 
     @Override
     public boolean removeWager(Integer playerId, Integer wagerId) {
-        List<Wager> wagersByPlayerId = dataService.getWagersByPlayerId(playerId);
-        if (wagersByPlayerId != null) {
-            return wagersByPlayerId.removeIf(w -> {
-                if (w.getId().equals(wagerId) && !w.isProcessed()) {
-                    playerService.increaseBalanceByPlayerId(playerId, w.getAmount() * 0.75);
-                    return true;
-                }
-                return false;
-            });
-        }
-        throw new IllegalArgumentException("Wager not found");
+        WagerEntity wager = wagerRepository.findById(wagerId).orElseThrow(() -> new IllegalArgumentException("Wager was not found"));
+        int deletedRows = wagerRepository.deleteByPlayerIdAndWagerId(playerId, wagerId);
+        if (deletedRows == 1) {
+            playerService.increaseBalanceByPlayerId(playerId, wager.getAmount() * 0.75);
+            return true;
+        } else throw new IllegalArgumentException("Wager not found");
     }
 
     @Override
