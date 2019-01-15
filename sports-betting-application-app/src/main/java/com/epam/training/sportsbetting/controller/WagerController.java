@@ -4,12 +4,14 @@ import com.epam.training.sportsbetting.ExtendedUserDetails;
 import com.epam.training.sportsbetting.service.WagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Transactional
 public class WagerController {
 
     private final WagerService wagerService;
@@ -32,7 +34,6 @@ public class WagerController {
                             @RequestParam("amount") Double amount) {
         Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
 
-        wagerService.newWager(userId, outcomeId, amount);
-        return true;
+        return wagerService.newWager(userId, outcomeId, amount);
     }
 }

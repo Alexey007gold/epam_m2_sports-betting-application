@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Objects;
 
 @WebFilter(filterName = "CookieLocaleFilter", urlPatterns = {"/*"})
 public class CookieLocaleFilter implements Filter {
@@ -25,7 +26,7 @@ public class CookieLocaleFilter implements Filter {
 
         if (!req.getRequestURI().startsWith("/resources/")) {
             String lang = req.getParameter(LANG_PARAM_NAME);
-            Locale locale = Locale.getDefault();
+            Locale locale = Objects.requireNonNull(Locale.getDefault());
             Cookie cookie;
             if (lang != null) {
                 locale = StringUtils.parseLocale(lang);
@@ -38,6 +39,10 @@ public class CookieLocaleFilter implements Filter {
                 }
             } else if ((cookie = WebUtils.getCookie(req, COOKIE_NAME)) != null) {
                 locale = StringUtils.parseLocale(cookie.getValue());
+            } else {
+                locale = StringUtils.parseLocale(locale.getLanguage());
+                cookie = new Cookie(COOKIE_NAME, locale.getLanguage());
+                res.addCookie(cookie);
             }
             response.setLocale(locale);
         }
