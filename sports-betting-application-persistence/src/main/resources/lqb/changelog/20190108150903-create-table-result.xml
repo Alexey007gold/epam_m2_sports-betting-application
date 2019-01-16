@@ -9,6 +9,9 @@
             <column name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 

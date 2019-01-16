@@ -19,6 +19,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="valid_to" type="DATETIME"/>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="fk_outcome_odd_outcome"
                                  baseTableName="outcome_odd"

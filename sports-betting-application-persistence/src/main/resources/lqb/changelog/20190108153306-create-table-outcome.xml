@@ -16,6 +16,9 @@
             <column name="value" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="fk_outcome_result"
                                  baseTableName="outcome"

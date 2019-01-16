@@ -31,6 +31,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="winner" type="BOOLEAN"/>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="fk_wager_sport_event"
                                  baseTableName="wager"

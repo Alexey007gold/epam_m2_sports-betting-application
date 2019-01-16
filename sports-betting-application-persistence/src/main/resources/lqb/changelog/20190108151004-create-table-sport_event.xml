@@ -24,6 +24,9 @@
             <column name="result_id" type="INT">
                 <constraints nullable="true"/>
             </column>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="fk_sport_event_result"
                                  baseTableName="sport_event"

@@ -18,6 +18,9 @@
             <column name="bet_type" type="CHAR">
                 <constraints nullable="false"/>
             </column>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="fk_bet_sport_event"
                                  baseTableName="bet"
