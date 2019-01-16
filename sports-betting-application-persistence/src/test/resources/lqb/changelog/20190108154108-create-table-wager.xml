@@ -1,0 +1,55 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20190108154108" author="Oleksii Kovetskyi">
+        <createTable tableName="wager">
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sport_event_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="outcome_odd_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DECIMAL(50,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="CHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="processed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="winner" type="BOOLEAN"/>
+            <column name="version" type="BIGINT(19)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_wager_sport_event"
+                                 baseTableName="wager"
+                                 baseColumnNames="sport_event_id"
+                                 referencedTableName="sport_event"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_wager_player"
+                                 baseTableName="wager"
+                                 baseColumnNames="player_id"
+                                 referencedTableName="player"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_wager_outcome_odd"
+                                 baseTableName="wager"
+                                 baseColumnNames="outcome_odd_id"
+                                 referencedTableName="outcome_odd"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

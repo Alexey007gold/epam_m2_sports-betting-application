@@ -1,6 +1,8 @@
 package com.epam.training.sportsbetting.entity;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -13,5 +15,6 @@ public abstract class AbstractEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Version
+    @Setter(AccessLevel.NONE)
     private long version;
 }
