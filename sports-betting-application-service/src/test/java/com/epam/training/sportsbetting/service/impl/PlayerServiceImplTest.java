@@ -2,20 +2,43 @@ package com.epam.training.sportsbetting.service.impl;
 
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
+import com.epam.training.sportsbetting.entity.PlayerEntity;
+import com.epam.training.sportsbetting.repository.PlayerRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceImplTest {
 
     @InjectMocks
     private PlayerServiceImpl playerService;
+
+    @Mock
+    private PlayerRepository playerRepository;
+
+    @Spy
+    private ModelMapper modelMapper;
+
+    @BeforeEach
+    public void init() {
+        doAnswer(i -> {
+            PlayerEntity argument = i.getArgument(0);
+            argument.setId(1);
+            return argument;
+        }).when(playerRepository).save(any(PlayerEntity.class));
+    }
 
     @Test
     void shouldReturnCorrectResultOnRegisterPlayer() {

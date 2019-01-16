@@ -8,6 +8,7 @@
         <module>sports-betting-application-domain</module>
         <module>sports-betting-application-app</module>
         <module>sports-betting-application-persistence</module>
+        <module>sports-betting-application-service</module>
     </modules>
 
     <properties>
@@ -64,6 +65,11 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
                 <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
             <dependency>
