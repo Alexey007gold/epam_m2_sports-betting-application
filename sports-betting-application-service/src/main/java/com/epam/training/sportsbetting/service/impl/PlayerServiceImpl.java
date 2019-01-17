@@ -1,5 +1,6 @@
 package com.epam.training.sportsbetting.service.impl;
 
+import com.epam.training.sportsbetting.PageDTO;
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.entity.PlayerEntity;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +60,11 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     @Transactional(readOnly = true)
     public Optional<Player> getPlayerById(Integer id) {
         return playerRepository.findById(id).map(p -> modelMapper.map(p, Player.class));
+    }
+
+    @Override
+    public PageDTO<Player> listPlayers(Pageable pageable) {
+        return PageDTO.of(playerRepository.findAll(pageable).map(p -> modelMapper.map(p, Player.class)));
     }
 
     @Override

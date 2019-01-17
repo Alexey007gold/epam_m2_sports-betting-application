@@ -1,5 +1,8 @@
 package com.epam.training.sportsbetting.domain.user;
 
+import com.epam.training.sportsbetting.json.serialize.LocalDateSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
@@ -18,6 +21,7 @@ public class Player extends User {
     @NotNull
     private Currency currency;
     @NotNull
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthDate;
 
     private Player() {

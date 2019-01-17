@@ -1,8 +1,10 @@
 package com.epam.training.sportsbetting.service;
 
+import com.epam.training.sportsbetting.PageDTO;
 import com.epam.training.sportsbetting.domain.user.Currency;
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.form.UpdatePlayerForm;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -26,6 +28,13 @@ public interface PlayerService {
      * @return
      */
     Optional<Player> getPlayerById(Integer id);
+
+    /**
+     * Returns players by page
+     * @param pageable
+     * @return
+     */
+    PageDTO<Player> listPlayers(Pageable pageable);
 
     /**
      * Returns a player object by it's email
