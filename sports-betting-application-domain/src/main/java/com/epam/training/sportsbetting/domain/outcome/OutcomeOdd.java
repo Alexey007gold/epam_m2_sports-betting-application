@@ -1,10 +1,10 @@
 package com.epam.training.sportsbetting.domain.outcome;
 
+import com.epam.training.sportsbetting.json.serialize.LocalDateTimeDeserializer;
+import com.epam.training.sportsbetting.json.serialize.LocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

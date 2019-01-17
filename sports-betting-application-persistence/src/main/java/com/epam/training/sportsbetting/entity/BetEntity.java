@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, exclude = "event")
 @ToString(exclude = "event")
 @Entity
 @Table(name = "bet")

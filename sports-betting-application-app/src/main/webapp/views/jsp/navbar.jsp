@@ -6,7 +6,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="nav-link text-light" href="<spring:url value="/home"/>"><spring:message code="web.code.menu.home"/></a></li>
-                <li class="nav-item"><a class="nav-link text-light" href="<spring:url value="/events"/>"><spring:message code="web.code.menu.events"/></a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="<spring:url value="/event"/>"><spring:message code="web.code.menu.events"/></a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-light" data-toggle="dropdown" href="#">
                         <spring:message code="web.code.menu.language"/>

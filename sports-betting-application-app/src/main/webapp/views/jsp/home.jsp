@@ -28,7 +28,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/home"/>"><fmt:message key="web.code.menu.home"/></a></li>
-                <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/events"/>"><fmt:message key="web.code.menu.events"/></a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="<c:url value="/event"/>"><fmt:message key="web.code.menu.events"/></a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-light" data-toggle="dropdown" href="#">
                         <fmt:message key="web.code.menu.language"/>

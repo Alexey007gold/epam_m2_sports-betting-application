@@ -1,6 +1,7 @@
 package com.epam.training.sportsbetting.domain.outcome;
 
 import com.epam.training.sportsbetting.domain.bet.Bet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Outcome {
     private Integer id;
     private String value;
     private List<OutcomeOdd> outcomeOdds;
+    @JsonIgnore
     private Bet bet;
 
     public Outcome() {
