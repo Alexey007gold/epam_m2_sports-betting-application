@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import static com.epam.training.sportsbetting.Role.ROLE_PLAYER;
 import static java.util.stream.Collectors.toMap;
 
 @Component
@@ -30,6 +31,7 @@ public class UpdateAccountServlet extends AbstractHomeServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        checkForRole(ROLE_PLAYER);
         Integer userId = ((ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         UpdatePlayerForm form = getUpdatePlayerForm(req);
 
@@ -40,6 +42,7 @@ public class UpdateAccountServlet extends AbstractHomeServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        checkForRole(ROLE_PLAYER);
         Integer userId = ((ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Player player = playerService.getPlayerById(userId)
                 .orElseThrow(IllegalStateException::new);

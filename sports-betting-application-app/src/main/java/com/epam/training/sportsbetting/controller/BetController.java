@@ -13,11 +13,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
+import static com.epam.training.sportsbetting.Role.ROLE_PLAYER;
+
 /**
  * Created by Oleksii_Kovetskyi on 12/21/2018.
  */
 @Controller
-public class BetController {
+public class BetController extends AbstractController {
 
     private static final String BETS_KEY = "bets";
     private static final String CURRENCY_KEY = "currency";
@@ -33,6 +35,7 @@ public class BetController {
 
     @GetMapping("/bets/{event_id}")
     public ModelAndView bets(Authentication authentication, @PathVariable("event_id") Integer eventId) {
+        checkForRole(authentication, ROLE_PLAYER);
         Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
         Optional<Player> player = playerService.getPlayerById(userId);
 

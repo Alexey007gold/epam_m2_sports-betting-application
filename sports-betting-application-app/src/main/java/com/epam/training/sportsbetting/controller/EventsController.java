@@ -6,6 +6,7 @@ import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.form.SportEventForm;
 import com.epam.training.sportsbetting.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +16,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
+import static com.epam.training.sportsbetting.Role.ROLE_ADMIN;
+import static com.epam.training.sportsbetting.Role.ROLE_PLAYER;
 import static java.util.stream.Collectors.toList;
 
 @Controller
-public class EventsController {
+public class EventsController extends AbstractController {
 
     private static final String EVENTS_KEY = "events";
 
@@ -30,7 +33,8 @@ public class EventsController {
     }
 
     @GetMapping("/event")
-    public ModelAndView events() {
+    public ModelAndView events(Authentication authentication) {
+        checkForRole(authentication, ROLE_PLAYER);
         ModelAndView mav = new ModelAndView("events");
         List<SportEvent> events = eventService.getFutureEvents().stream()
                 .filter(e -> e.getResult() == null)
@@ -41,13 +45,15 @@ public class EventsController {
 
     @GetMapping("/api/event/page")
     @ResponseBody
-    public PageDTO<SportEvent> eventsByPage(@RequestBody PageRequest pageRequest) {
+    public PageDTO<SportEvent> eventsByPage(Authentication authentication, @RequestBody PageRequest pageRequest) {
+        checkForRole(authentication, ROLE_ADMIN);
         return eventService.getEvents(pageRequest.toPageable());
     }
 
     @PostMapping("/api/event/add")
     @ResponseBody
-    public List<SportEvent> addEvents(@RequestBody List<SportEventForm> events) {
+    public List<SportEvent> addEvents(Authentication authentication, @RequestBody List<SportEventForm> events) {
+        checkForRole(authentication, ROLE_ADMIN);
         validateEventsForm(events);
         return eventService.addEvents(events);
     }

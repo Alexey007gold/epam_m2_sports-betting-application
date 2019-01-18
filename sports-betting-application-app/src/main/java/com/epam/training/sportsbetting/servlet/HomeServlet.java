@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.epam.training.sportsbetting.Role.ROLE_PLAYER;
+
 @Component
 @WebServlet(urlPatterns = {"", "/home"})
 public class HomeServlet extends AbstractHomeServlet {
@@ -22,6 +24,7 @@ public class HomeServlet extends AbstractHomeServlet {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        checkForRole(ROLE_PLAYER);
         Integer userId = ((ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Player player = playerService.getPlayerById(userId)
             .orElseThrow(() -> new IllegalStateException("Player was not found"));

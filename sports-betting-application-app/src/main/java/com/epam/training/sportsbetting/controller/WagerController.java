@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.epam.training.sportsbetting.Role.ROLE_PLAYER;
+
 @RestController
-public class WagerController {
+public class WagerController extends AbstractController {
 
     private final WagerService wagerService;
 
@@ -21,6 +23,7 @@ public class WagerController {
 
     @DeleteMapping("/api/removeWager")
     public boolean removeWager(Authentication authentication, @RequestParam("wager_id") Integer wagerId) {
+        checkForRole(authentication, ROLE_PLAYER);
         Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
 
         return wagerService.removeWager(userId, wagerId);
@@ -30,6 +33,7 @@ public class WagerController {
     public boolean newWager(Authentication authentication,
                             @RequestParam("outcome_id") Integer outcomeId,
                             @RequestParam("amount") Double amount) {
+        checkForRole(authentication, ROLE_PLAYER);
         Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
 
         return wagerService.newWager(userId, outcomeId, amount);

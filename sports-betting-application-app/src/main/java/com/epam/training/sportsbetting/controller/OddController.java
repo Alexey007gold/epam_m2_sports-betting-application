@@ -4,14 +4,17 @@ import com.epam.training.sportsbetting.domain.outcome.OutcomeOdd;
 import com.epam.training.sportsbetting.form.AddOutcomeOddForm;
 import com.epam.training.sportsbetting.service.OutcomeOddService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.epam.training.sportsbetting.Role.ROLE_ADMIN;
+
 @RestController
-public class OddController {
+public class OddController extends AbstractController {
 
     private final OutcomeOddService outcomeOddService;
 
@@ -21,7 +24,8 @@ public class OddController {
     }
 
     @PostMapping("/api/odd/add")
-    public List<OutcomeOdd> addOdds(@RequestBody List<AddOutcomeOddForm> events) {
+    public List<OutcomeOdd> addOdds(Authentication authentication, @RequestBody List<AddOutcomeOddForm> events) {
+        checkForRole(authentication, ROLE_ADMIN);
         validateForm(events);
         return outcomeOddService.addOutcomeOdds(events);
     }
