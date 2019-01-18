@@ -73,6 +73,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login");
+        registry.addViewController("/admin_home");
     }
 
     @Bean
