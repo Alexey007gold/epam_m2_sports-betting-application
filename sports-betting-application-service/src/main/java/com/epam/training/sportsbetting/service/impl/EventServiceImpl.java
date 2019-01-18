@@ -1,5 +1,6 @@
 package com.epam.training.sportsbetting.service.impl;
 
+import com.epam.training.sportsbetting.PageDTO;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.sportevent.Result;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
@@ -8,13 +9,13 @@ import com.epam.training.sportsbetting.entity.OutcomeEntity;
 import com.epam.training.sportsbetting.entity.OutcomeOddEntity;
 import com.epam.training.sportsbetting.entity.SportEventEntity;
 import com.epam.training.sportsbetting.form.SportEventForm;
-import com.epam.training.sportsbetting.repository.BetRepository;
 import com.epam.training.sportsbetting.repository.OutcomeOddRepository;
 import com.epam.training.sportsbetting.repository.OutcomeRepository;
 import com.epam.training.sportsbetting.repository.SportEventRepository;
 import com.epam.training.sportsbetting.service.EventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +27,15 @@ import java.util.stream.StreamSupport;
 public class EventServiceImpl implements EventService {
 
     private final SportEventRepository eventRepository;
-    private final BetRepository betRepository;
     private final OutcomeRepository outcomeRepository;
     private final OutcomeOddRepository outcomeOddRepository;
 
     private final ModelMapper mapper;
 
     @Autowired
-    public EventServiceImpl(SportEventRepository eventRepository,
-                            BetRepository betRepository, OutcomeRepository outcomeRepository,
+    public EventServiceImpl(SportEventRepository eventRepository, OutcomeRepository outcomeRepository,
                             OutcomeOddRepository outcomeOddRepository, ModelMapper mapper) {
         this.eventRepository = eventRepository;
-        this.betRepository = betRepository;
         this.outcomeRepository = outcomeRepository;
         this.outcomeOddRepository = outcomeOddRepository;
         this.mapper = mapper;
@@ -113,5 +111,10 @@ public class EventServiceImpl implements EventService {
         return entities.stream()
                 .map(e -> mapper.map(e, SportEvent.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageDTO<SportEvent> getEvents(Pageable pageRequest) {
+        return PageDTO.of(eventRepository.findAll(pageRequest).map(e -> mapper.map(e, SportEvent.class)));
     }
 }

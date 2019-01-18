@@ -4,13 +4,8 @@ import com.epam.training.sportsbetting.domain.bet.Bet;
 import com.epam.training.sportsbetting.domain.outcome.Outcome;
 import com.epam.training.sportsbetting.domain.outcome.OutcomeOdd;
 import com.epam.training.sportsbetting.domain.sportevent.FootballSportEvent;
-import com.epam.training.sportsbetting.domain.sportevent.Result;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
-import com.epam.training.sportsbetting.domain.user.Currency;
-import com.epam.training.sportsbetting.domain.user.Player;
-import com.epam.training.sportsbetting.domain.wager.Wager;
 import com.epam.training.sportsbetting.service.PlayerService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,13 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BetServiceImplTest {
@@ -35,48 +23,6 @@ class BetServiceImplTest {
 
     @InjectMocks
     private BetServiceImpl betService;
-
-    @Test
-    void shouldReturnCorrectResultOnProcessBets() {
-        Player player = new Player.Builder()
-            .withName("John")
-            .withBalance(100)
-            .withAccountNumber("1111")
-            .withCurrency(Currency.EUR)
-            .build();
-
-        SportEvent event = getEvent();
-        Outcome outcome1 = event.getBets().get(0).getOutcomes().get(0);
-        Outcome outcome2 = event.getBets().get(0).getOutcomes().get(1);
-        event.setResult(new Result(Collections.singletonList(outcome2)));
-        List<Wager> wagers = Arrays.asList(
-            new Wager.Builder()
-                .withEvent(event)
-                .withPlayer(player)
-                .withOutcomeOdd(outcome1.getOutcomeOdds().get(0))
-                .withAmount(5)
-                .withCurrency(player.getCurrency())
-                .withTimestamp(System.currentTimeMillis())
-                .build(),
-            new Wager.Builder()
-                .withEvent(event)
-                .withPlayer(player)
-                .withOutcomeOdd(outcome2.getOutcomeOdds().get(0))
-                .withAmount(5)
-                .withCurrency(player.getCurrency())
-                .withTimestamp(System.currentTimeMillis())
-                .build());
-
-        Map<Player, Double> playerPrizeMap = betService.processBets(wagers, Collections.singletonList(event));
-
-        assertEquals(8.5, (double) playerPrizeMap.get(player));
-        verify(playerService).increasePlayerBalance(any(Player.class), eq(8.5));
-    }
-
-    @Test
-    void shouldReturnEmptyMapOnProcessBets() {
-        betService.processBets(Collections.emptyList(), Collections.emptyList());
-    }
 
     private SportEvent getEvent() {
         SportEvent event1 = new FootballSportEvent("Southampton v Bournemoth",

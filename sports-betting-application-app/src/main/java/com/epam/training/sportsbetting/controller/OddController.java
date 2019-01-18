@@ -20,7 +20,7 @@ public class OddController {
         this.outcomeOddService = outcomeOddService;
     }
 
-    @PostMapping("/odd/add")
+    @PostMapping("/api/odd/add")
     public List<OutcomeOdd> addOdds(@RequestBody List<AddOutcomeOddForm> events) {
         validateForm(events);
         return outcomeOddService.addOutcomeOdds(events);

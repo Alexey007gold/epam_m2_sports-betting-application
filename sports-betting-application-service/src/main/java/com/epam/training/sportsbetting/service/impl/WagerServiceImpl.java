@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,8 +76,8 @@ public class WagerServiceImpl implements WagerService {
         SportEventEntity sportEventEntity = eventRepository.getByBetsOutcomesId(outcomeId)
                 .orElseThrow(() -> new IllegalStateException("Not found event for the outcomeId"));
         LocalDateTime currentTime = LocalDateTime.now();
-        if (sportEventEntity.getStartDate().isBefore(currentTime))
-            throw new IllegalStateException("The event has already started");
+        if (sportEventEntity.getStartDate().isBefore(currentTime) || sportEventEntity.getResult() != null)
+            throw new IllegalStateException("The event is already played");
 
         OutcomeOddEntity activeOdd = Objects.requireNonNull(outcomeService
                 .getActiveOddEntity(outcomeById.getOutcomeOdds(), sportEventEntity.getStartDate()));
@@ -103,6 +102,30 @@ public class WagerServiceImpl implements WagerService {
             playerService.increaseBalanceByPlayerId(playerId, wager.getAmount() * 0.75);
             return true;
         } else throw new IllegalArgumentException("Wager not found");
+    }
+
+    @Override
+    public Map<Integer, Double> processWagers(Set<Integer> playedEventsIds) {
+        List<WagerEntity> wagerEntities = wagerRepository.findByEventIdAndNotProcessed(playedEventsIds);
+
+        Map<Integer, Double> playerIdToPrize = new HashMap<>();
+
+        wagerEntities.forEach(w -> {
+            w.setProcessed(true);
+            List<OutcomeEntity> realOutcomes = w.getEvent().getResult().getOutcomes();
+            Integer expectedOutcomeId = w.getOutcomeOdd().getOutcomeId();
+            for (OutcomeEntity realOutcome : realOutcomes) {
+                if (realOutcome.getId().equals(expectedOutcomeId)) {
+                    w.setWinner(true);
+                    double prize = w.getAmount() * w.getOutcomeOdd().getValue();
+                    playerIdToPrize.merge(w.getPlayer().getId(), prize, Double::sum);
+                    break;
+                }
+            }
+        });
+
+        playerIdToPrize.forEach(playerService::increaseBalanceByPlayerId);
+        return playerIdToPrize;
     }
 
     @Override

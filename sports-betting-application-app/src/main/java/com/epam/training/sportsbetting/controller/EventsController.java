@@ -1,5 +1,7 @@
 package com.epam.training.sportsbetting.controller;
 
+import com.epam.training.sportsbetting.PageDTO;
+import com.epam.training.sportsbetting.PageRequest;
 import com.epam.training.sportsbetting.domain.sportevent.SportEvent;
 import com.epam.training.sportsbetting.form.SportEventForm;
 import com.epam.training.sportsbetting.service.EventService;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 public class EventsController {
@@ -28,11 +32,20 @@ public class EventsController {
     @GetMapping("/event")
     public ModelAndView events() {
         ModelAndView mav = new ModelAndView("events");
-        mav.addObject(EVENTS_KEY, eventService.getFutureEvents());
+        List<SportEvent> events = eventService.getFutureEvents().stream()
+                .filter(e -> e.getResult() == null)
+                .collect(toList());
+        mav.addObject(EVENTS_KEY, events);
         return mav;
     }
 
-    @PostMapping("/event/add")
+    @GetMapping("/api/event/page")
+    @ResponseBody
+    public PageDTO<SportEvent> eventsByPage(@RequestBody PageRequest pageRequest) {
+        return eventService.getEvents(pageRequest.toPageable());
+    }
+
+    @PostMapping("/api/event/add")
     @ResponseBody
     public List<SportEvent> addEvents(@RequestBody List<SportEventForm> events) {
         validateEventsForm(events);

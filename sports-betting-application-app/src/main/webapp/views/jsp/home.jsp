@@ -134,7 +134,7 @@
 <script>
     function removeWager(row) {
         $.ajax({
-            url: '<c:url value="/removeWager?wager_id="/>' + row.getAttribute("wager_id"),
+            url: '<c:url value="/api/removeWager?wager_id="/>' + row.getAttribute("wager_id"),
             type: 'DELETE',
             success: function(result) {
                 if (result === true) {

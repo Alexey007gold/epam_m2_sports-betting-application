@@ -4,6 +4,8 @@ import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface WagerService {
 
@@ -16,6 +18,15 @@ public interface WagerService {
     boolean newWager(Integer playerId, Integer outcomeId, Double amount);
 
     boolean removeWager(Integer playerId, Integer wagerId);
+
+    /**
+     * Check player's wagers against actual outcomes
+     * and increase player's balance
+     *
+     * @param playedEventsIds ids of events that are played (have results)
+     * @return
+     */
+    Map<Integer, Double> processWagers(Set<Integer> playedEventsIds);
 
     double calculatePrize(Wager wager);
 }

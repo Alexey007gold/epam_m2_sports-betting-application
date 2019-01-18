@@ -19,14 +19,14 @@ public class WagerController {
         this.wagerService = wagerService;
     }
 
-    @DeleteMapping("/removeWager")
+    @DeleteMapping("/api/removeWager")
     public boolean removeWager(Authentication authentication, @RequestParam("wager_id") Integer wagerId) {
         Integer userId = ((ExtendedUserDetails) authentication.getPrincipal()).getId();
 
         return wagerService.removeWager(userId, wagerId);
     }
 
-    @PostMapping("/newWager")
+    @PostMapping("/api/newWager")
     public boolean newWager(Authentication authentication,
                             @RequestParam("outcome_id") Integer outcomeId,
                             @RequestParam("amount") Double amount) {

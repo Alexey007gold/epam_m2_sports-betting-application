@@ -20,12 +20,12 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/player/{id}")
+    @GetMapping("/api/player/{id}")
     public Player getPlayerInfo(@PathVariable("id") Integer id) {
         return playerService.getPlayerById(id).orElseThrow(() -> new IllegalArgumentException("Player not found"));
     }
 
-    @GetMapping("/player/page")
+    @GetMapping("/api/player/page")
     public PageDTO<Player> getPlayers(@RequestBody PageRequest pageRequest) {
         return playerService.listPlayers(pageRequest.toPageable());
     }
