@@ -8,6 +8,7 @@ import com.epam.training.sportsbetting.service.EventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SportEvent> getAllEvents() {
         return StreamSupport.stream(eventRepository.findAll().spliterator(), false)
                 .map(e -> mapper.map(e, SportEvent.class))
@@ -48,6 +50,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SportEvent> getFutureEvents() {
         return eventRepository.getFutureEvents().stream()
                 .map(e -> mapper.map(e, SportEvent.class))

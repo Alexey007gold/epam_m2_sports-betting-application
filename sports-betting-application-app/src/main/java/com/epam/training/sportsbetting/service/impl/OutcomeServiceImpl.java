@@ -8,6 +8,7 @@ import com.epam.training.sportsbetting.service.OutcomeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,7 @@ public class OutcomeServiceImpl implements OutcomeService {
     }
 
     @Override
+    @Transactional
     public Outcome getOutcomeById(Integer id) {
         return mapper.map(outcomeRepository.findById(id).orElseThrow(), Outcome.class);
     }

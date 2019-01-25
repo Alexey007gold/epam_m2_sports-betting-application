@@ -13,6 +13,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,6 +40,7 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     }
 
     @Override
+    @Transactional
     public Player registerPlayer(String name, String accNum, double balance, Currency currency, LocalDate birthDate) {
         PlayerEntity player = PlayerEntity.builder()
             .enabled(true)
@@ -53,16 +55,19 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Player> getPlayerById(Integer id) {
         return playerRepository.findById(id).map(p -> modelMapper.map(p, Player.class));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Player> getPlayerByEmail(String email) {
         return playerRepository.findByEmail(email).map(p -> modelMapper.map(p, Player.class));
     }
 
     @Override
+    @Transactional
     public Player updatePlayerByEmail(String email, UpdatePlayerForm form) {
         PlayerEntity player = playerRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException(String.format("User with email %s not found", email)));
@@ -71,6 +76,7 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     }
 
     @Override
+    @Transactional
     public Player updatePlayerById(Integer id, UpdatePlayerForm form) {
         PlayerEntity player = playerRepository.findById(id)
             .orElseThrow(() -> new IllegalStateException(String.format("User with id %d not found", id)));
@@ -94,6 +100,7 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     }
 
     @Override
+    @Transactional
     public void decreaseBalanceByPlayerId(Integer id, double amount) {
         PlayerEntity player = playerRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         decreasePlayerBalance(player, amount);
@@ -110,6 +117,7 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     }
 
     @Override
+    @Transactional
     public void increaseBalanceByPlayerId(Integer id, double amount) {
         PlayerEntity player = playerRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         increasePlayerBalance(player, amount);
@@ -146,6 +154,7 @@ public class PlayerServiceImpl implements PlayerService, InitializingBean {
     }
 
     @Override
+    @Transactional
     public void afterPropertiesSet() throws IOException, URISyntaxException {
         //PostConstruct alternative for java 9+
         loadPlayers();

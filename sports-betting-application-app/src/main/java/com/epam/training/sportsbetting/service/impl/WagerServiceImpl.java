@@ -48,12 +48,13 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Wager> getWagersByPlayer(Player player) {
         return getWagersByPlayerEmail(player.getEmail());
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Wager> getWagersByPlayerId(Integer id) {
         return wagerRepository.findByPlayerId(id).stream()
                 .map((w) -> mapper.map(w, Wager.class))
@@ -61,6 +62,7 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Wager> getWagersByPlayerEmail(String email) {
         return wagerRepository.findByPlayerEmail(email).stream()
                 .map((w) -> mapper.map(w, Wager.class))
@@ -68,6 +70,7 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
+    @Transactional
     public boolean newWager(Integer playerId, Integer outcomeId, Double amount) {
         Player player = playerService.getPlayerById(playerId).orElseThrow(IllegalArgumentException::new);
         OutcomeEntity outcomeById = outcomeRepository.findById(outcomeId).orElseThrow();
@@ -92,6 +95,7 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
+    @Transactional
     public boolean removeWager(Integer playerId, Integer wagerId) {
         WagerEntity wager = wagerRepository.findById(wagerId).orElseThrow(() -> new IllegalArgumentException("Wager was not found"));
         int deletedRows = wagerRepository.deleteByIdAndPlayerId(wagerId, playerId);

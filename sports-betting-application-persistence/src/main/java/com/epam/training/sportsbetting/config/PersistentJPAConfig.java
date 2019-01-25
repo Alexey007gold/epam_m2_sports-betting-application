@@ -18,7 +18,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableJpaRepositories("com.epam.training.sportsbetting.repository")
-@EnableTransactionManagement(proxyTargetClass = true)
+@EnableTransactionManagement
 @PropertySource("classpath:application.properties")
 public class PersistentJPAConfig {
 

@@ -11,6 +11,7 @@ import com.epam.training.sportsbetting.service.PlayerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -64,6 +65,7 @@ public class BetServiceImpl implements BetService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Bet> getBetsByEventId(Integer eventId) {
         return betRepository.findByEventId(eventId).stream()
             .map(e -> mapper.map(e, Bet.class))
