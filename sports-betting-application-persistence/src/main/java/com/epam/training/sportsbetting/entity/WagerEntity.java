@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Table(name = "wager")
 public class WagerEntity extends AbstractEntity {
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "sport_event_id")
     private SportEventEntity event;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "outcome_odd_id")
     private OutcomeOddEntity outcomeOdd;
     @Column(name = "amount", nullable = false)

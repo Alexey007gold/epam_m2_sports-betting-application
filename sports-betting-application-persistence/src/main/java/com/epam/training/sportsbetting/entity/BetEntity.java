@@ -21,7 +21,7 @@ public class BetEntity extends AbstractEntity {
     private SportEventEntity event;
     @Column(name = "description", nullable = false)
     private String description;
-    @OneToMany(mappedBy = "betId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bet", cascade = CascadeType.ALL)
     private List<OutcomeEntity> outcomes;
     @Convert(converter = BetTypeConverter.class)
     @Column(name = "bet_type", nullable = false)

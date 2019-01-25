@@ -71,18 +71,20 @@ public class WagerServiceImpl implements WagerService {
     public boolean newWager(Integer playerId, Integer outcomeId, Double amount) {
         Player player = playerService.getPlayerById(playerId).orElseThrow(IllegalArgumentException::new);
         OutcomeEntity outcomeById = outcomeRepository.findById(outcomeId).orElseThrow();
-        SportEventEntity sportEventEntity = eventRepository.getByOutcomeId(outcomeId)
+        SportEventEntity sportEventEntity = eventRepository.getByBetsOutcomesId(outcomeId)
                 .orElseThrow(() -> new IllegalStateException("Not found event for the outcomeId"));
         LocalDateTime currentTime = LocalDateTime.now();
         if (sportEventEntity.getStartDate().isBefore(currentTime))
             throw new IllegalStateException("The event has already started");
 
+        OutcomeOddEntity activeOdd = Objects.requireNonNull(outcomeService
+                .getActiveOddEntity(outcomeById.getOutcomeOdds(), sportEventEntity.getStartDate()));
         wagerRepository.save(WagerEntity.builder()
                 .amount(amount)
                 .currency(Currency.valueOf(player.getCurrency().toString()))
                 .timestamp(currentTime)
-                .outcomeOdd(Objects.requireNonNull(outcomeService.getActiveOddEntity(outcomeById.getOutcomeOdds(), sportEventEntity.getStartDate())))
-                .event(entityManager.getReference(BetEntity.class, outcomeById.getBetId()).getEvent())
+                .outcomeOdd(activeOdd)
+                .event(outcomeById.getBet().getEvent())
                 .player(entityManager.getReference(PlayerEntity.class, playerId))
                 .build());
         playerService.decreaseBalanceByPlayerId(playerId, amount);
@@ -92,7 +94,7 @@ public class WagerServiceImpl implements WagerService {
     @Override
     public boolean removeWager(Integer playerId, Integer wagerId) {
         WagerEntity wager = wagerRepository.findById(wagerId).orElseThrow(() -> new IllegalArgumentException("Wager was not found"));
-        int deletedRows = wagerRepository.deleteByPlayerIdAndWagerId(playerId, wagerId);
+        int deletedRows = wagerRepository.deleteByIdAndPlayerId(wagerId, playerId);
         if (deletedRows == 1) {
             playerService.increaseBalanceByPlayerId(playerId, wager.getAmount() * 0.75);
             return true;
