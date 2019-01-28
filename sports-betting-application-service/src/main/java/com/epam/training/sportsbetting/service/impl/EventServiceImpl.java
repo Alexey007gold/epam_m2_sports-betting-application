@@ -70,6 +70,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public List<SportEvent> addEvents(List<SportEventForm> events) {
         List<SportEventEntity> entities = events.stream()
                 .map(e -> {
@@ -97,7 +98,7 @@ public class EventServiceImpl implements EventService {
         eventRepository.saveAll(entities);
 
         betToOutcomesMap.forEach((bet, outcomes) -> {
-            outcomes.forEach(o -> o.setBetId(bet.getId()));
+            outcomes.forEach(o -> o.setBet(bet));
             outcomeRepository.saveAll(outcomes);
             bet.setOutcomes(outcomes);
         });

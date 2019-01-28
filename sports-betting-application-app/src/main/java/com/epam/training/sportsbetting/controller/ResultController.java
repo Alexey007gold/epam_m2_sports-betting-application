@@ -5,7 +5,6 @@ import com.epam.training.sportsbetting.service.ResultService;
 import com.epam.training.sportsbetting.service.WagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +16,6 @@ import java.util.Set;
 import static com.epam.training.sportsbetting.Role.ROLE_ADMIN;
 
 @RestController
-@Transactional
 public class ResultController extends AbstractController {
 
     private final ResultService resultService;

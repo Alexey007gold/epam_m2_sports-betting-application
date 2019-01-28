@@ -13,7 +13,5 @@ public interface WagerRepository extends AbstractRepository<WagerEntity> {
 
     int deleteByIdAndPlayerId(int wagerId, int playerId);
 
-    @Query("SELECT w FROM WagerEntity w " +
-            "WHERE w.event.id IN :eventIds AND w.processed = false")
-    List<WagerEntity> findByEventIdAndNotProcessed(@Param("eventIds") Set<Integer> eventsIds);
+    List<WagerEntity> findByEventIdInAndProcessedFalse(Set<Integer> eventsIds);
 }

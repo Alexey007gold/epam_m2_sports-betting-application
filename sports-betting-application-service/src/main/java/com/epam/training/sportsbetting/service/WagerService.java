@@ -2,6 +2,7 @@ package com.epam.training.sportsbetting.service;
 
 import com.epam.training.sportsbetting.domain.user.Player;
 import com.epam.training.sportsbetting.domain.wager.Wager;
+import com.epam.training.sportsbetting.entity.WagerEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -28,5 +29,5 @@ public interface WagerService {
      */
     Map<Integer, Double> processWagers(Set<Integer> playedEventsIds);
 
-    double calculatePrize(Wager wager);
+    double calculatePrize(WagerEntity wager);
 }

@@ -105,8 +105,9 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
+    @Transactional
     public Map<Integer, Double> processWagers(Set<Integer> playedEventsIds) {
-        List<WagerEntity> wagerEntities = wagerRepository.findByEventIdAndNotProcessed(playedEventsIds);
+        List<WagerEntity> wagerEntities = wagerRepository.findByEventIdInAndProcessedFalse(playedEventsIds);
 
         Map<Integer, Double> playerIdToPrize = new HashMap<>();
 
@@ -117,7 +118,7 @@ public class WagerServiceImpl implements WagerService {
             for (OutcomeEntity realOutcome : realOutcomes) {
                 if (realOutcome.getId().equals(expectedOutcomeId)) {
                     w.setWinner(true);
-                    double prize = w.getAmount() * w.getOutcomeOdd().getValue();
+                    double prize = calculatePrize(w);
                     playerIdToPrize.merge(w.getPlayer().getId(), prize, Double::sum);
                     break;
                 }
@@ -129,7 +130,12 @@ public class WagerServiceImpl implements WagerService {
     }
 
     @Override
-    public double calculatePrize(Wager wager) {
-        return wager.getAmount() * wager.getOutcomeOdd().getValue();
+    public double calculatePrize(WagerEntity wager) {
+        double prize = wager.getAmount() * wager.getOutcomeOdd().getValue();
+
+        String str = String.valueOf(prize);
+        int pointIndex = str.indexOf('.');
+        int truncateToIndex = Math.min(pointIndex + 3, str.length());
+        return Double.valueOf(str.substring(0, truncateToIndex));
     }
 }

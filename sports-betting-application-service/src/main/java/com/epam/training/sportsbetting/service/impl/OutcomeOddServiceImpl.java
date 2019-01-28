@@ -8,6 +8,7 @@ import com.epam.training.sportsbetting.service.OutcomeOddService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class OutcomeOddServiceImpl implements OutcomeOddService {
     }
 
     @Override
+    @Transactional
     public List<OutcomeOdd> addOutcomeOdds(List<AddOutcomeOddForm> outcomeOddFormList) {
         List<OutcomeOddEntity> entities = outcomeOddFormList.stream()
                 .map(odd -> mapper.map(odd, OutcomeOddEntity.class))

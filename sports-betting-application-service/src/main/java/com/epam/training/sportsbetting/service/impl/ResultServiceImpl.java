@@ -9,6 +9,7 @@ import com.epam.training.sportsbetting.repository.SportEventRepository;
 import com.epam.training.sportsbetting.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -26,28 +27,29 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    @Transactional
     public Set<Integer> addResults(List<AddResultForm> addResultFormList) {
         Map<Integer, SportEventEntity> eventIdToEventEntityMap = new HashMap<>();
         addResultFormList.forEach(f -> {
             Integer eventId = f.getEventId();
             Integer outcomeId = f.getOutcomeId();
             SportEventEntity eventEntity = eventIdToEventEntityMap.get(eventId);
+            ResultEntity result;
             if (eventEntity == null) {
                 eventEntity = eventRepository.findById(eventId)
                         .orElseThrow(() -> new IllegalArgumentException(String.format("Event with id %d not found", eventId)));
                 eventIdToEventEntityMap.put(eventId, eventEntity);
-            }
 
-            ResultEntity result = eventEntity.getResult();
-            if (result != null) {
-                throw new IllegalStateException(String.format("Event with id %d already has results", eventId));
+                if (eventEntity.getResult() != null) {
+                    throw new IllegalStateException(String.format("Event with id %d already has results", eventId));
+                }
+                eventEntity.setResult(new ResultEntity());
+                eventEntity.getResult().setOutcomes(new ArrayList<>());
+                eventRepository.save(eventEntity);
             }
-            eventEntity.setResult(new ResultEntity());
-            eventEntity.getResult().setOutcomes(new ArrayList<>());
-            eventRepository.save(eventEntity);
             result = eventEntity.getResult();
 
-            OutcomeEntity outcomeEntity = outcomeRepository.findByIdAndEventId(outcomeId, eventId);
+            OutcomeEntity outcomeEntity = outcomeRepository.findByIdAndBetEventId(outcomeId, eventId);
             if (outcomeEntity != null) {
                 outcomeEntity.setResultId(result.getId());
                 result.getOutcomes().add(outcomeEntity);
